@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cloudquery-dms
+  labels:
+    app: cloudquery-dms
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cloudquery-dms
+  template:
+    metadata:
+      labels:
+        app: cloudquery-dms
+    spec:
+      containers:
+        - name: dms
+          image: yshanchui/cloudquery-dms:cloudquery-club-V2.3.0
+          env:
+            - name: LANG
+              value: C.UTF-8
+            - name: LC_ALL
+              value: C.UTF-8
+            - name: _JAVA_OPTIONS
+              value: -Xmx4g -Xms4g
+          volumeMounts:
+            - name: data-volume
+              mountPath: /opt/cloudquery/data
+            - name: cloudquery-dms-configmap
+              mountPath: /opt/cloudquery/config/application.yml
+              subPath: application.yml
+            - name: tmp-volume
+              mountPath: /tmp
+            - name: data-change-volume
+              mountPath: /opt/cloudquery/DataChange
+      volumes:
+        - name: data-volume
+          persistentVolumeClaim:
+            claimName: cloudquery-dms-data
+        - name: cloudquery-dms-configmap
+          configMap:
+            name: cloudquery-dms-configmap
+        - name: tmp-volume
+          persistentVolumeClaim:
+            claimName: cloudquery-dms-tmp
+        - name: data-change-volume
+          persistentVolumeClaim:
+            claimName: cloudquery-flow-data-change

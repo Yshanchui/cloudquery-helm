@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cloudquery-metadict
+  labels:
+    app: cloudquery-metadict
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cloudquery-metadict
+  template:
+    metadata:
+      labels:
+        app: cloudquery-metadict
+    spec:
+      containers:
+        - name: cloudquery-metadict
+          image: yshanchui/cloudquery-metadict:cloudquery-club-V2.3.0
+          env:
+            - name: _JAVA_OPTIONS
+              value: -Xmx1g -Xms1g
+          volumeMounts:
+            - name: config-volume
+              mountPath: /opt/cloudquery/config/application.yml
+              subPath: application.yml
+            - name: lucene-indexes-volume
+              mountPath: /opt/cloudquery/LuceneIndexes
+      volumes:
+        - name: config-volume
+          configMap:
+            name: cloudquery-metadict-configmap
+        - name: lucene-indexes-volume
+          persistentVolumeClaim:
+            claimName: cloudquery-metadict-lucene-indexes

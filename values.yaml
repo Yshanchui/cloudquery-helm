@@ -1,0 +1,20 @@
+name: cloudquery
+
+storageClassName: ""
+
+zookeeper:
+  addr: cloudquery-zookeeper
+
+redis:
+  addr: cloudquery-redis-master
+  password: nya6X#uSes@
+
+clickhouse:
+  addr:
+  username: admin
+  password: aIzFD0oEUa
+
+pgsql:
+  addr:
+  username: postgres
+  password: WVCmFZs841@

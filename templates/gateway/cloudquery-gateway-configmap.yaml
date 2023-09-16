@@ -1,0 +1,114 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cloudquery-gateway-configmap
+data:
+  application.yml: |
+    # 指定服务启动端口
+    server:
+      port: 8888
+      error:
+        include-exception: false
+        include-stacktrace: always
+      servlet:
+        context-path: /gateway
+
+    spring:
+      application:
+        name: cloudquery-gateway
+      redis:
+        database: 1
+        host: {{ .Values.redis.addr }}
+        port: 6379
+        password: nya6X#uSes@
+      datasource:
+        url: jdbc:postgresql://cloudquery-postgresql:5432/postgres
+        username: postgres
+        password: WVCmFZs841@
+        driver-class-name: org.postgresql.Driver
+      jpa:
+        show-sql: false
+        hibernate:
+          ddl-auto: update
+        properties:
+          hibernate:
+            enable_lazy_load_no_trans: true
+            jdbc:
+              lob:
+                non_contextual_creation: true
+        open-in-view: true
+        database-platform: org.hibernate.dialect.PostgreSQLDialect
+      main:
+        allow-bean-definition-overriding: true
+        web-application-type: reactive
+      cloud:
+        zookeeper:
+          connect-string: cloudquery-zookeeper:2181
+
+    ######################网关配置############################
+        gateway:
+          discovery:
+            locator:
+              lowerCaseServiceId: true
+              enabled: true
+          routes:
+            - id: user
+              uri: lb://cloudquery-user
+              predicates:
+                - Path=/gateway/${cq.gateway.version}/user/**
+              filters:
+                - StripPrefix=2
+            - id: dms
+              uri: lb://cloudquery-dms
+              predicates:
+                - Path=/gateway/${cq.gateway.version}/dms/**
+              filters:
+                - StripPrefix=2
+            - id: flow
+              uri: lb://cloudquery-flow
+              predicates:
+                - Path=/gateway/${cq.gateway.version}/flow/**
+              filters:
+                - StripPrefix=2
+            - id: audit-display
+              uri: lb://display
+              predicates:
+                - Path=/gateway/${cq.gateway.version}/audit/display/**
+              filters:
+                - StripPrefix=2
+            - id: message
+              uri: lb://cloudquery-message
+              predicates:
+                - Path=/gateway/${cq.gateway.version}/message/**
+              filters:
+                - StripPrefix=2
+    ########################################################################################################################
+    dubbo:
+      scan:
+        base-packages: cn.bintools.cloudquery.gateway
+      application:
+        id: cloudquery-gateway
+        name: cloudquery-gateway
+      protocol:
+        id: gateway
+        name: dubbo
+        port: -1
+      registry:
+        id: zookeeper-gatewayProd
+        address: zookeeper://cloudquery-zookeeper:2181
+      consumer:
+        timeout: 300000
+        group: cloudquery_test1
+        check: false
+
+    cq:
+      gateway:
+        version: v2
+        urls:
+          - /flow/openapi/getToDoInvoices
+          - /flow/openapi/executePermission
+          - /flow/openapi/getAllRunningFlows
+          - /user/classify/api/classifyResource
+          - /audit/display/openapi/operateLogDetail
+          - /audit/display/openapi/findAuditLog
+          - /message/msg/messages

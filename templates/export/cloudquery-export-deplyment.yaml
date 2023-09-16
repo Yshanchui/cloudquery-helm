@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cloudquery-export
+  labels:
+    app: cloudquery-export
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cloudquery-export
+  template:
+    metadata:
+      labels:
+        app: cloudquery-export
+    spec:
+      containers:
+        - name: export
+          image: yshanchui/cloudquery-export:cloudquery-club-V2.3.0
+          env:
+            - name: CLOUDQUERY_HOME
+              value: /opt/cloudquery/data
+            - name: _JAVA_OPTIONS
+              value: -Xmx2g -Xms2g
+          volumeMounts:
+            - name: data-volume
+              mountPath: /opt/cloudquery/data
+            - name: config-volume
+              mountPath: /opt/cloudquery/config/application.yml
+              subPath: application.yml
+      volumes:
+        - name: data-volume
+          persistentVolumeClaim:
+            claimName: cloudquery-user-data
+        - name: config-volume
+          configMap:
+            name: cloudquery-export-configmap

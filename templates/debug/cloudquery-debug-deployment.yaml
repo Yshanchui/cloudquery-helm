@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cloudquery-debug
+  labels:
+    app: cloudquery-debug
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cloudquery-debug
+  template:
+    metadata:
+      labels:
+        app: cloudquery-debug
+    spec:
+      containers:
+        - name: cloudquery-debug
+          image: yshanchui/cloudquery-debug:cloudquery-club-V2.3.0
+          env:
+            - name: _JAVA_OPTIONS
+              value: -Xmx800m -Xms800m
+          volumeMounts:
+            - name: config-volume
+              mountPath: /opt/cloudquery/config/application.yml
+              subPath: application.yml
+      volumes:
+        - name: config-volume
+          configMap:
+            name: cloudquery-debug-configmap

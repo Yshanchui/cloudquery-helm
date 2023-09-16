@@ -1,0 +1,115 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cloudquery-metadict-configmap
+data:
+  application.yml: |
+    server:
+      port: 9192
+      error:
+        include-exception: false
+        include-stacktrace: always
+      servlet:
+        context-path: /dict
+
+    logging:
+      level:
+        sql: error
+        cn.bintools.metadict: info
+
+    spring:
+      mvc:
+        async:
+          request-timeout: -1
+      application:
+        name:
+          cloudquery-MetaDictProd
+      datasource:
+        url: jdbc:postgresql://cloudquery-postgresql:5432/postgres
+        username: postgres
+        password: WVCmFZs841@
+        driver-class-name: org.postgresql.Driver
+        hikari:
+          pool-name: DictDB-Pool
+          maximum-pool-size: 20
+          data-source-properties:
+            cachePrepStmts: true
+            cacheResultSetMetadata: true
+            cacheServerConfiguration: true
+            elideSetAutoCommits: true
+            maintainTimeStats: false
+            prepStmtCacheSize: 250
+            prepStmtCacheSqlLimit: 2048
+            rewriteBatchedStatements: true
+            useLocalSessionState: true
+            useServerPrepStmts: true
+      flyway:
+        baselineOnMigrate: true
+        enabled: true
+        locations: filesystem:./db/migration
+      jpa:
+        database: postgresql
+        properties:
+          hibernate:
+            search:
+              backend:
+                analysis:
+                  configurer: class:cn.bintools.cloudquery.metadict.services.index.CustomAnalyzer
+                directory:
+                  root: /opt/cloudquery/LuceneIndexes
+                io:
+                  writer:
+                    ram_buffer_size: 100
+                    max_buffered_docs: 1000
+                  merge:
+                    factor: 10
+              automatic_indexing:
+                enabled: false
+            id:
+              sequence:
+                increment_size_mismatch_strategy: FIX
+            #        order_inserts: true
+            dialect: org.hibernate.dialect.PostgreSQL95Dialect
+            format_sql: false
+            show_sql: false
+            jdbc:
+              batch_size: 250
+              time_zone: UTC
+
+        hibernate:
+          ddl-auto: validate
+        open-in-view: false
+
+      redis:
+        database: 1
+        host: {{ .Values.redis.addr }}
+        port: 6379
+        password: nya6X#uSes@
+
+    dubbo:
+      scan:
+        base-packages: cn.bintools.cloudquery.metadict
+      application:
+        id: cloudquery-metadict
+        name: cloudquery-metadict
+        qos-port: 33444
+        qos-enable: true
+        qos-accept-foreign-ip: false
+      protocol:
+        id: metadict
+        name: dubbo
+        port: 12345
+        serialization: kryo
+      registry:
+        id: zookeeper-metadictProd
+        address: zookeeper://cloudquery-zookeeper:2181
+      consumer:
+        timeout: 30000
+        group: cloudquery_test1
+        check: false
+
+    metadict:
+      # 定义dm module 路径
+      server_home: /opt/cloudquery/dmc/dms_home
+      module_directory: /opt/cloudquery/dmc/modules
+      stg: /opt/cloudquery/dmc/modules

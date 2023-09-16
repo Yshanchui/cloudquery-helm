@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: enterprise-web
+  labels:
+    app: enterprise-web
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: enterprise-web
+  template:
+    metadata:
+      labels:
+        app: enterprise-web
+    spec:
+      containers:
+        - image: yshanchui/cloudquery-base-web:cloudquery-club-V2.3.0
+          name: enterprise-web
+          ports:
+            - containerPort: 9898
+            - containerPort: 9999
+          volumeMounts:
+            - name: enterprise-web-nginx-conf
+              mountPath: /etc/nginx/nginx.conf
+              subPath: nginx.conf
+            - name: enterprise-web-dq
+              mountPath: /opt/cloudquery/dq
+      volumes:
+        - name: enterprise-web-nginx-conf
+          configMap:
+            name: enterprise-web-nginx-conf
+        - name: enterprise-web-dq
+          persistentVolumeClaim:
+            claimName: enterprise-web-dq

@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cloudquery-flow
+  labels:
+    app: cloudquery-flow
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cloudquery-flow
+  template:
+    metadata:
+      labels:
+        app: cloudquery-flow
+    spec:
+      containers:
+        - name: cloudquery-flow
+          image: yshanchui/cloudquery-flow:cloudquery-club-V2.3.0
+          env:
+            - name: _JAVA_OPTIONS
+              value: -Xmx800m -Xms800m
+          volumeMounts:
+            - name: data-volume
+              mountPath: /opt/cloudquery/DataChange
+            - name: config-volume
+              mountPath: /opt/cloudquery/config/application.yml
+              subPath: application.yml
+      volumes:
+        - name: data-volume
+          persistentVolumeClaim:
+            claimName: cloudquery-flow-data-change
+        - name: config-volume
+          configMap:
+            name: cloudquery-flow-configmap

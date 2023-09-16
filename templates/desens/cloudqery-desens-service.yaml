@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: cloudquery-desens
+  name: cloudquery-desens
+spec:
+  ports:
+    - name: "http"
+      port: 6202
+      targetPort: 6202
+  selector:
+    app: cloudquery-desens

@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cloudquery-terminal
+  labels:
+    app: cloudquery-terminal
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cloudquery-terminal
+  template:
+    metadata:
+      labels:
+        app: cloudquery-terminal
+    spec:
+      containers:
+        - name: cloudquery-terminal
+          image: yshanchui/cloudquery-base-terminal:cloudquery-club-V2.3.0
+          command: ["sh", "-c"]
+          args:
+            - "/opt/cloudquery/terminal -p 9950 -w -ws-origin .* --audit-url http://cloudquery-analyze:9007/analyze/extract/extract_log"
+          env:
+            - name: CLOUDQUERY_HOME
+              value: /opt/cloudquery/data
+          volumeMounts:
+            - name: data-volume
+              mountPath: /opt/cloudquery/data
+      volumes:
+        - name: data-volume
+          persistentVolumeClaim:
+            claimName: cloudquery-user-data

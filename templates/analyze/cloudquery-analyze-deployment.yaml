@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cloudquery-analyze
+  labels:
+    app: cloudquery-analyze
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cloudquery-analyze
+  template:
+    metadata:
+      labels:
+        app: cloudquery-analyze
+    spec:
+      containers:
+        - name: cloudquery-analyze
+          image: yshanchui/cloudquery-analyze:cloudquery-club-V2.3.0
+          env:
+            - name: _JAVA_OPTIONS
+              value: -Xmx800m -Xms800m
+          volumeMounts:
+            - name: config-volume
+              mountPath: /opt/cloudquery/config/application.yml
+              subPath: application.yml
+            - name: archive-volume
+              mountPath: /opt/cloudquery/archive
+      volumes:
+        - name: config-volume
+          configMap:
+            name: cloudquery-analyze-configmap
+        - name: archive-volume
+          persistentVolumeClaim:
+            claimName: cloudquery-analyze-archive

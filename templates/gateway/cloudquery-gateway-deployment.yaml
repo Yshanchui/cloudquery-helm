@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cloudquery-gateway
+  labels:
+    app: cloudquery-gateway
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cloudquery-gateway
+  template:
+    metadata:
+      labels:
+        app: cloudquery-gateway
+    spec:
+      containers:
+        - name: cloudquery-gateway
+          image: yshanchui/cloudquery-gateway:cloudquery-club-V2.3.0
+          env:
+            - name: _JAVA_OPTIONS
+              value: -Xmx800m -Xms800m
+          volumeMounts:
+            - name: config-volume
+              mountPath: /opt/cloudquery/config/application.yml
+              subPath: application.yml
+      volumes:
+        - name: config-volume
+          configMap:
+            name: cloudquery-gateway-configmap

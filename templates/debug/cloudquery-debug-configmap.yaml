@@ -1,0 +1,46 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cloudquery-debug-configmap
+data:
+  application.yml: |
+    server:
+      port: 8899
+
+
+    logging:
+      level:
+        root: info
+
+    spring:
+      jackson:
+        time-zone: GMT+8
+        date-format: yyyy-MM-dd HH:mm:ss
+      redis:
+        database: 1
+        host: {{ .Values.redis.addr }}
+        port: 6379
+        password: nya6X#uSes@
+        timeout: 5000
+
+    dubbo:
+      scan:
+        base-packages: cn.bintools.cq.dbggw.service.impl
+      application:
+        id: cloudquery-dbggw
+        name: cloudquery-dbggw
+        qos-port: 33336
+        qos-enable: true
+        qos-accept-foreign-ip: false
+      protocol:
+        id: dbggw
+        name: dubbo
+        port: 12345
+        payload: 100971520
+      registry:
+        id: zookeeper-dbggwRelease
+        address: zookeeper://cloudquery-zookeeper:2181
+      consumer:
+        timeout: 300000
+        group: cloudquery_test1
+        check: false

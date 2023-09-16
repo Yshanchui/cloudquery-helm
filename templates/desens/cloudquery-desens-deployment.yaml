@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cloudquery-desens
+  labels:
+    app: cloudquery-desens
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cloudquery-desens
+  template:
+    metadata:
+      labels:
+        app: cloudquery-desens
+    spec:
+      containers:
+        - name: cloudquery-desens
+          image: yshanchui/cloudquery-desens:cloudquery-club-V2.3.0
+          env:
+            - name: _JAVA_OPTIONS
+              value: -Xmx800m -Xms800m
+          volumeMounts:
+            - name: config-volume
+              mountPath: /opt/cloudquery/config/application.yml
+              subPath: application.yml
+      volumes:
+        - name: config-volume
+          configMap:
+            name: cloudquery-desens-configmap

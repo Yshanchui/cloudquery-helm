@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cloudquery-user
+  labels:
+    app: cloudquery-user
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cloudquery-user
+  template:
+    metadata:
+      labels:
+        app: cloudquery-user
+    spec:
+      containers:
+        - name: user
+          image: yshanchui/cloudquery-user:cloudquery-club-V2.3.0
+          env:
+            - name: CLOUDQUERY_HOME
+              value: /opt/cloudquery/data
+            - name: _JAVA_OPTIONS
+              value: -Xmx2g -Xms2g
+          volumeMounts:
+            - name: data-volume
+              mountPath: /opt/cloudquery/data
+            - name: config-volume
+              mountPath: /opt/cloudquery/config/application.yml
+              subPath: application.yml
+            - name: images-volume
+              mountPath: /opt/cloudquery/images
+            - name: avatars-volume
+              mountPath: /opt/cloudquery/avatars
+      volumes:
+        - name: data-volume
+          persistentVolumeClaim:
+            claimName: cloudquery-user-data
+        - name: config-volume
+          configMap:
+            name: cloudquery-user-configmap
+        - name: images-volume
+          persistentVolumeClaim:
+            claimName: cloudquery-user-images
+        - name: avatars-volume
+          persistentVolumeClaim:
+            claimName: cloudquery-user-avatars
