@@ -8,9 +8,11 @@ https://www.cloudquery.club
 v2.3.0压缩包 转 helm部署
 
 下载helm包,进入目录
+
 kubectl create ns cloudquery
 
 helm install cloudquery . -n cloudquery --set storageClassName=sc的名字
 
 弄的粗糙，忽怪
 
+初始账户密码： admin001/Hello123$
