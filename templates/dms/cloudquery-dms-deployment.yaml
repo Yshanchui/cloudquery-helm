@@ -23,7 +23,7 @@ spec:
             - name: LC_ALL
               value: C.UTF-8
             - name: _JAVA_OPTIONS
-              value: -Xmx4g -Xms4g
+              value: -Xmx2g -Xms2g
           volumeMounts:
             - name: data-volume
               mountPath: /opt/cloudquery/data
@@ -34,6 +34,13 @@ spec:
               mountPath: /tmp
             - name: data-change-volume
               mountPath: /opt/cloudquery/DataChange
+          resources:
+            requests:
+              memory: "1Gi"
+              cpu: "100m"
+            limits:
+              memory: "3Gi"
+              cpu: "1"
       volumes:
         - name: data-volume
           persistentVolumeClaim:

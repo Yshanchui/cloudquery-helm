@@ -26,6 +26,13 @@ spec:
           volumeMounts:
             - name: data-volume
               mountPath: /opt/cloudquery/data
+          resources:
+            requests:
+              memory: "500Mi"
+              cpu: "100m"
+            limits:
+              memory: "1Gi"
+              cpu: "500m"
       volumes:
         - name: data-volume
           persistentVolumeClaim:

@@ -19,7 +19,14 @@ spec:
           image: yshanchui/cloudquery-message:cloudquery-club-V2.3.0
           env:
             - name: _JAVA_OPTIONS
-              value: -Xmx2g -Xms2g
+              value: -Xmx1g -Xms1g
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "100m"
+            limits:
+              memory: "1500Mi"
+              cpu: "500m"
           volumeMounts:
             - name: config-volume
               mountPath: /opt/cloudquery/config/application.yml

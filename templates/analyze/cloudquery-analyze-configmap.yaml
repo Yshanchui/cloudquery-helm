@@ -1163,8 +1163,8 @@ data:
         </task:scheduled-tasks>
   sql.properties: |
     connection.url=jdbc:clickhouse://cloudquery-clickhouse:8123/default?rewriteBatchedStatements=true&use_server_time_zone=Asia/Shanghai&use_time_zone=Asia/Shanghai
-    connection.user=default
-    connection.password=
+    connection.user=admin
+    connection.password=aIzFD0oEUa
 
 
     prop.insertExtratSql=insert into default.dwd_fact_audit_record(id, created_time, begin_time, end_time, user_id, user_name, client_ip, target_type, business_type, operate_type, entry_point, detail, result_flag, error_msg, db_type, server_ip, port, client_agent, db_edition, db_name, table_name, affect_rows, execute_cost, session_id, explain, operate_target, sql_parse_flag, extrat_flag, check_permission_id, original_sql, connection_id) select generateUUIDv4() as id, log_create_time  as created_time, execute_begin    as begin_time, execute_end      as end_time, executor         as user_id, executor_name    as user_name, client_ip, 'CQ_EXTRAT'      as target_type, 'EXTRAT_DB'      as business_type, sql_type         as operate_type, connection_name  as entry_point, execute_sql      as detail, result_flag, error_msg, log_type         as db_type, server_ip, port, client_agent, db_edition, db_name, table_name, affect_rows, execute_cost, session_id, explain, resource_id, sql_parse_flag, extrat_flag, check_permission_id, original_sql, connection_id from default.ods_extrat_audit_record where log_create_time < ? and log_create_time >= (select max(last_time) from default.calculate_time where type = 'EXECUTE');

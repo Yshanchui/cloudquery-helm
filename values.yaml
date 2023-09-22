@@ -1,6 +1,6 @@
 name: cloudquery
 
-storageClassName: ""
+storageClassName: "ebs-gp3"
 
 zookeeper:
   addr: cloudquery-zookeeper
