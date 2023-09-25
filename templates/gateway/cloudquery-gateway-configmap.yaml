@@ -18,7 +18,7 @@ data:
         name: cloudquery-gateway
       redis:
         database: 1
-        host: {{ .Values.redis.addr }}
+        host: cloudquery-redis-master
         port: 6379
         password: nya6X#uSes@
       datasource:

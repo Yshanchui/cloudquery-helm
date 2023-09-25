@@ -47,7 +47,7 @@ data:
           connect-string: cloudquery-zookeeper:2181
       redis:
         database: 1
-        host: {{ .Values.redis.addr }}
+        host: cloudquery-redis-master
         port: 6379
         password: nya6X#uSes@
       datasource:
@@ -79,7 +79,7 @@ data:
         database-schema-update: true
         async-executor-activate: true
         datasource:
-          jdbc-url: jdbc:postgresql://cloudquery-postgreSQL:5432/postgres?currentSchema=activiti
+          jdbc-url: jdbc:postgresql://cloudquery-postgresql:5432/postgres?currentSchema=activiti
           username: postgres
           password: WVCmFZs841@
           driver-class-name: org.postgresql.Driver

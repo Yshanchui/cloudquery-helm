@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: cloudquery-debug
-          image: yshanchui/cloudquery-debug:cloudquery-club-V2.3.0
+          image: yshanchui/cloudquery-debug:cloudquery-club-V2.4.0
           env:
             - name: _JAVA_OPTIONS
               value: -Xmx800m -Xms800m

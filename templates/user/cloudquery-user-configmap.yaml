@@ -20,7 +20,7 @@ data:
       redis:
         timeout: 5000
         database: 1
-        host: {{ .Values.redis.addr }}
+        host: cloudquery-redis-master
         port: 6379
         password: nya6X#uSes@
       datasource:
@@ -66,7 +66,7 @@ data:
     user:
       server_home: /opt/cloudquery/dmc/dms_home
       module_directory: /opt/cloudquery/dmc/modules
-      images: /work/JK_WorkSpace/一键打包_前端后端审计_base-2.4.4.1开始_ARM_X86_全部加密_企业版社区版/5/cloudquery-base2/cloudquery-user/ignore/images
+      images: /work/JK_WorkSpace/一键打包_前端后端审计_base-2.4.4.1开始_ARM_X86_K8S_全部加密_企业版社区版/34/cloudquery-base2/cloudquery-user/ignore/images
       avatars:
         dir: /opt/cloudquery/avatars
         extname: jpg,png
@@ -81,9 +81,9 @@ data:
       # 通信加密算法，支持 RSA，SM2，若不配置，默认是 RSA
       # transmission_algorithm: RSA
       # 存储加密算法，支持 DES、AES，若不配置，默认是 DES
-      # storage_algorithm: DES
+      # storage_algorithm: AES
       # 存储加密密钥，若不配置，使用系统默认密钥，DES默认密钥：XZFnM2rwkJg8qsKmBYIQauHS  AES默认密钥：BlztWtMNhtNHUZNv0wIUzw==
-      # storage_algorithm_key: XZFnM2rwkJg8qsKmBYIQauHS
+      # storage_algorithm_key: BlztWtMNhtNHUZNv0wIUzw==
     #login.limit 没有定义时默认为0，不限制单个账号登录会话数。 当login.limit > 0时才限制单个账号登录会话数。
     #  login:
     #    limit: 0
@@ -93,6 +93,11 @@ data:
     cloudquery:
       home: ${CLOUDQUERY_HOME:/opt/cloudquery/data}
       system:
+        data_migration: false
+        data_migration_setting:
+          import_connection_init_role: false #导入连接初始化角色为无权限，2.3与2.4业务不一致需要视情况决定
+          enable_all_schema: false #导入连接时同时开启资源纳管，需要dms保持启动，需要用户数据库能连接成功
+          enable_all_hidden_mode: true #开启所有隐藏模式，不显示无权限对象，低于2.3.7系列导入建议开启，但是要优先开启 enable_all_schema 选项才生效
         company-name: bintools
         watermark: true
         copy: false

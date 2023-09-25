@@ -38,23 +38,34 @@ data:
       cloud:
         zookeeper:
           connect-string: cloudquery-zookeeper:2181
-
+      
       application:
         name: cloudquery-dms
       cache:
         type: redis
       redis:
         database: 1
-        host: {{ .Values.redis.addr }}
+        host: cloudquery-redis-master
         port: 6379
         password: nya6X#uSes@
         timeout: 5000
+        mq:
+          producer:
+            retries: 1
+            expired-time: 300000
+            queue-size: 2000
+          consumer:
+            pull-time-out: 1
+            batch-size: 1
+            auto-ack: true
+            no-ack-time-out: 300000
+            offset-strategy: last_consumed
       jackson:
         time-zone: GMT+8
         date-format: yyyy-MM-dd HH:mm:ss
       swagger:
         enable: true
-
+    
     #######导出文件路径#######
     task:
       home: ${CLOUDQUERY_HOME:/opt/cloudquery/data}
@@ -62,7 +73,7 @@ data:
     dubbo:
       scan:
         base-packages: cn.bintools.cloudquery.dms
-
+    
       application:
         id: cloudquery-dms
         name: cloudquery-dms
@@ -75,8 +86,8 @@ data:
         port: 12366
         payload: 100971520
         serialization: kryo
-
-
+    
+    
       registry:
         id: cloudquery-dmsProd
         address: zookeeper://cloudquery-zookeeper:2181
@@ -84,7 +95,7 @@ data:
         timeout: 300000
         group: cloudquery_test1
         check: false
-
+    
     springdoc:
       api-docs:
         enabled: false

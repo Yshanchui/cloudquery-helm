@@ -35,6 +35,11 @@ data:
     version:
       script-path: /opt/cloudquery/script-path
 
+    measurement:
+      ## 慢sql时间，单位 ms
+      slow-sql-time: 500
+      high-risk-operate: DELETE,DROP,GRANT
+
     #数据库配置
     spring:
       context:
@@ -46,14 +51,14 @@ data:
         name: cloudquery-analyze
       cloud:
         zookeeper:
-          connect-string: {{ .Values.zookeeper.addr }}:2181
+          connect-string: cloudquery-zookeeper:2181
       jackson:
         time-zone: GMT+8
       redis:
         database: 1
-        host: {{ .Values.redis.addr }}
+        host: cloudquery-redis-master
         port: 6379
-        password: {{ .Values.redis.password }}
+        password: nya6X#uSes@
       datasource:
         jdbc-url: jdbc:postgresql://cloudquery-postgresql:5432/postgres?TimeZone=Asia/Shanghai
         username: postgres
@@ -108,7 +113,7 @@ data:
 
       registry:
         id: zookeeper-analyzeDev
-        address: zookeeper://{{ .Values.zookeeper.addr }}:2181
+        address: zookeeper://cloudquery-zookeeper:2181
       consumer:
         timeout: 300000
         group: cloudquery_test1
@@ -508,7 +513,7 @@ data:
         <bean id="calculateExecuteTask" class="cn.bintools.cloudquery.analyze.service.CalculateService">
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="" />
+            <property name="pwd" value="aIzFD0oEUa" />
             <property name="tasks">
                 <list value-type="cn.bintools.cloudquery.analyze.pojo.model.CalculateTask">
                     <ref bean="executeModel"/>
@@ -525,7 +530,7 @@ data:
         <bean id="calculateOperateTask" class="cn.bintools.cloudquery.analyze.service.CalculateService">
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="" />
+            <property name="pwd" value="aIzFD0oEUa" />
             <property name="tasks">
                 <list value-type="cn.bintools.cloudquery.analyze.pojo.model.CalculateTask">
                     <ref bean="operateModel"/>
@@ -542,7 +547,7 @@ data:
         <bean id="calculateAuthTask" class="cn.bintools.cloudquery.analyze.service.CalculateService">
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="" />
+            <property name="pwd" value="aIzFD0oEUa" />
             <property name="tasks">
                 <list value-type="cn.bintools.cloudquery.analyze.pojo.model.CalculateTask">
                     <ref bean="authModel"/>
@@ -559,7 +564,7 @@ data:
         <bean id="calculateUserTask" class="cn.bintools.cloudquery.analyze.service.CalculateService">
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="" />
+            <property name="pwd" value="aIzFD0oEUa" />
             <property name="tasks">
                 <list value-type="cn.bintools.cloudquery.analyze.pojo.model.CalculateTask">
                     <ref bean="userModel"/>
@@ -576,7 +581,7 @@ data:
         <bean id="calculatePermissionTask" class="cn.bintools.cloudquery.analyze.service.CalculateService">
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="" />
+            <property name="pwd" value="aIzFD0oEUa" />
             <property name="tasks">
                 <list value-type="cn.bintools.cloudquery.analyze.pojo.model.CalculateTask">
                     <ref bean="permissionModel"/>
@@ -597,7 +602,7 @@ data:
             </property>
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="" />
+            <property name="pwd" value="aIzFD0oEUa" />
         </bean>
         <bean id="roleModel" class="cn.bintools.cloudquery.analyze.pojo.model.CalculateTask">
             <property name="type" value="ROLE" />
@@ -613,7 +618,7 @@ data:
             </property>
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="" />
+            <property name="pwd" value="aIzFD0oEUa" />
         </bean>
         <bean id="nodeModel" class="cn.bintools.cloudquery.analyze.pojo.model.CalculateTask">
             <property name="type" value="NODE" />
@@ -630,7 +635,7 @@ data:
             </property>
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="" />
+            <property name="pwd" value="aIzFD0oEUa" />
         </bean>
         <bean id="connectionModel" class="cn.bintools.cloudquery.analyze.pojo.model.CalculateTask">
             <property name="type" value="CONNECTION" />
@@ -655,7 +660,7 @@ data:
             </property>
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="" />
+            <property name="pwd" value="aIzFD0oEUa" />
         </bean>
         <bean id="rolePermissionModel" class="cn.bintools.cloudquery.analyze.pojo.model.CalculateTask">
             <property name="type" value="ROLE_PERMISSION" />
@@ -672,7 +677,7 @@ data:
             </property>
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="" />
+            <property name="pwd" value="aIzFD0oEUa" />
         </bean>
         <bean id="deptModel" class="cn.bintools.cloudquery.analyze.pojo.model.CalculateTask">
             <property name="type" value="DEPT" />
@@ -689,7 +694,7 @@ data:
             </property>
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="" />
+            <property name="pwd" value="aIzFD0oEUa" />
         </bean>
         <bean id="userRoleModel" class="cn.bintools.cloudquery.analyze.pojo.model.CalculateTask">
             <property name="type" value="USER_ROLE" />
@@ -706,7 +711,7 @@ data:
             </property>
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="" />
+            <property name="pwd" value="aIzFD0oEUa" />
         </bean>
         <bean id="authenticationModel" class="cn.bintools.cloudquery.analyze.pojo.model.CalculateTask">
             <property name="type" value="AUTHENTICATION" />
@@ -720,56 +725,77 @@ data:
             <property name="executeSql" value="${prop.mvCurrentUserAmount}" />
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="" />
+            <property name="pwd" value="aIzFD0oEUa" />
         </bean>
         <bean id="mvAuditRecordHoursTask" class="cn.bintools.cloudquery.analyze.service.CalculateService">
             <property name="tableName" value="mv_audit_record_hours" />
             <property name="executeSql" value="${prop.mvAuditRecordHours}" />
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="" />
+            <property name="pwd" value="aIzFD0oEUa" />
         </bean>
         <bean id="mvAuditRecordDaysTask" class="cn.bintools.cloudquery.analyze.service.CalculateService">
             <property name="tableName" value="mv_audit_record_days" />
             <property name="executeSql" value="${prop.mvAuditRecordDays}" />
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="" />
+            <property name="pwd" value="aIzFD0oEUa" />
         </bean>
         <bean id="mvAuditRecordMonths" class="cn.bintools.cloudquery.analyze.service.CalculateService">
             <property name="tableName" value="mv_audit_record_months" />
             <property name="executeSql" value="${prop.mvAuditRecordMonths}" />
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="" />
+            <property name="pwd" value="aIzFD0oEUa" />
+        </bean>
+        <bean id="mvRecordHoursTask" class="cn.bintools.cloudquery.analyze.service.CalculateService">
+            <property name="tableName" value="mv_record_hours" />
+            <property name="executeSql" value="${prop.mvRecordHours}" />
+            <property name="url" value="${connection.url}" />
+            <property name="user" value="${connection.user}" />
+            <property name="pwd" value="aIzFD0oEUa" />
+        </bean>
+        <bean id="mvRecordDaysTask" class="cn.bintools.cloudquery.analyze.service.CalculateService">
+            <property name="tableName" value="mv_record_days" />
+            <property name="executeSql" value="${prop.mvRecordDays}" />
+            <property name="url" value="${connection.url}" />
+            <property name="user" value="${connection.user}" />
+            <property name="pwd" value="aIzFD0oEUa" />
+        </bean>
+        <bean id="mvUserFlowAmountTask" class="cn.bintools.cloudquery.analyze.service.CalculateService">
+            <property name="tableName" value="mv_user_flow_amount" />
+            <property name="executeSql" value="${prop.mvUserFlowAmount}" />
+            <property name="url" value="${connection.url}" />
+            <property name="user" value="${connection.user}" />
+            <property name="pwd" value="aIzFD0oEUa" />
         </bean>
         <bean id="mvUserAmountTask" class="cn.bintools.cloudquery.analyze.service.CalculateService">
             <property name="tableName" value="mv_user_amount" />
             <property name="executeSql" value="${prop.mvUserAmount}" />
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="" />
+            <property name="pwd" value="aIzFD0oEUa" />
         </bean>
         <bean id="mvUserAmountHoursTask" class="cn.bintools.cloudquery.analyze.service.CalculateService">
             <property name="tableName" value="mv_user_amount_hours" />
             <property name="executeSql" value="${prop.mvUserAmountHours}" />
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="" />
+            <property name="pwd" value="aIzFD0oEUa" />
         </bean>
         <bean id="mvUserAmountDaysTask" class="cn.bintools.cloudquery.analyze.service.CalculateService">
             <property name="tableName" value="mv_user_amount_days" />
             <property name="executeSql" value="${prop.mvUserAmountDays}" />
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="" />
+            <property name="pwd" value="aIzFD0oEUa" />
         </bean>
         <bean id="mvUserAmountMonthsTask" class="cn.bintools.cloudquery.analyze.service.CalculateService">
             <property name="tableName" value="mv_user_amount_months" />
             <property name="executeSql" value="${prop.mvUserAmountMonths}" />
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="" />
+            <property name="pwd" value="aIzFD0oEUa" />
         </bean>
 
         <bean id="mvUserAmountQuatersTask" class="cn.bintools.cloudquery.analyze.service.CalculateService">
@@ -777,7 +803,7 @@ data:
             <property name="executeSql" value="${prop.mvUserAmountQuaters}" />
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="" />
+            <property name="pwd" value="aIzFD0oEUa" />
         </bean>
 
         <bean id="mvUserAmountWeeksTask" class="cn.bintools.cloudquery.analyze.service.CalculateService">
@@ -785,7 +811,7 @@ data:
             <property name="executeSql" value="${prop.mvUserAmountWeeks}" />
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="" />
+            <property name="pwd" value="aIzFD0oEUa" />
         </bean>
 
         <bean id="mvUserAmountYearsTask" class="cn.bintools.cloudquery.analyze.service.CalculateService">
@@ -793,13 +819,13 @@ data:
             <property name="executeSql" value="${prop.mvUserAmountYears}" />
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="" />
+            <property name="pwd" value="aIzFD0oEUa" />
         </bean>
 
         <bean id="mvOrgObjectTimeAmountHoursTask" class="cn.bintools.cloudquery.analyze.service.CalculateService">
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="" />
+            <property name="pwd" value="aIzFD0oEUa" />
             <property name="tasks">
                 <list value-type="cn.bintools.cloudquery.analyze.pojo.model.CalculateTask">
                     <ref bean="ootHourModel"/>
@@ -816,7 +842,7 @@ data:
         <bean id="mvOrgObjectTimeAmountDaysTask" class="cn.bintools.cloudquery.analyze.service.CalculateService">
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="" />
+            <property name="pwd" value="aIzFD0oEUa" />
             <property name="tasks">
                 <list value-type="cn.bintools.cloudquery.analyze.pojo.model.CalculateTask">
                     <ref bean="ootDayModel"/>
@@ -833,7 +859,7 @@ data:
         <bean id="mvOrgObjectTimeAmountWeeksTask" class="cn.bintools.cloudquery.analyze.service.CalculateService">
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="" />
+            <property name="pwd" value="aIzFD0oEUa" />
             <property name="tasks">
                 <list value-type="cn.bintools.cloudquery.analyze.pojo.model.CalculateTask">
                     <ref bean="ootWeekModel"/>
@@ -850,7 +876,7 @@ data:
         <bean id="mvOrgObjectTimeAmountMonthsTask" class="cn.bintools.cloudquery.analyze.service.CalculateService">
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="" />
+            <property name="pwd" value="aIzFD0oEUa" />
             <property name="tasks">
                 <list value-type="cn.bintools.cloudquery.analyze.pojo.model.CalculateTask">
                     <ref bean="ootMonthModel"/>
@@ -868,7 +894,7 @@ data:
         <bean id="mvOrgObjectTimeAmountQuartersTask" class="cn.bintools.cloudquery.analyze.service.CalculateService">
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="" />
+            <property name="pwd" value="aIzFD0oEUa" />
             <property name="tasks">
                 <list value-type="cn.bintools.cloudquery.analyze.pojo.model.CalculateTask">
                     <ref bean="ootQuarterModel"/>
@@ -885,7 +911,7 @@ data:
         <bean id="mvOrgObjectTimeAmountYearsTask" class="cn.bintools.cloudquery.analyze.service.CalculateService">
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="" />
+            <property name="pwd" value="aIzFD0oEUa" />
             <property name="tasks">
                 <list value-type="cn.bintools.cloudquery.analyze.pojo.model.CalculateTask">
                     <ref bean="ootYearModel"/>
@@ -902,7 +928,7 @@ data:
         <bean id="mvOrgObjectTimeAmountTask" class="cn.bintools.cloudquery.analyze.service.CalculateService">
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="" />
+            <property name="pwd" value="aIzFD0oEUa" />
             <property name="tasks">
                 <list value-type="cn.bintools.cloudquery.analyze.pojo.model.CalculateTask">
                     <ref bean="ootModel"/>
@@ -921,7 +947,7 @@ data:
             <property name="executeSql" value="${prop.dwdDimTimeHour}" />
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="" />
+            <property name="pwd" value="aIzFD0oEUa" />
         </bean>
 
         <bean id="dwdDimTimeDayTask" class="cn.bintools.cloudquery.analyze.service.CalculateService">
@@ -929,7 +955,7 @@ data:
             <property name="executeSql" value="${prop.dwdDimTimeDay}" />
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="" />
+            <property name="pwd" value="aIzFD0oEUa" />
         </bean>
 
         <bean id="dwdDimTimeWeekTask" class="cn.bintools.cloudquery.analyze.service.CalculateService">
@@ -937,7 +963,7 @@ data:
             <property name="executeSql" value="${prop.dwdDimTimeWeek}" />
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="" />
+            <property name="pwd" value="aIzFD0oEUa" />
         </bean>
 
         <bean id="dwdDimTimeMonthTask" class="cn.bintools.cloudquery.analyze.service.CalculateService">
@@ -945,7 +971,7 @@ data:
             <property name="executeSql" value="${prop.dwdDimTimeMonth}" />
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="" />
+            <property name="pwd" value="aIzFD0oEUa" />
         </bean>
 
 
@@ -954,7 +980,7 @@ data:
             <property name="executeSql" value="${prop.dwdDimTimeQuarter}" />
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="" />
+            <property name="pwd" value="aIzFD0oEUa" />
         </bean>
 
 
@@ -963,7 +989,7 @@ data:
             <property name="executeSql" value="${prop.dwdDimTimeYear}" />
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="" />
+            <property name="pwd" value="aIzFD0oEUa" />
         </bean>
 
         <bean id="mvDbTypeAmountTask" class="cn.bintools.cloudquery.analyze.service.CalculateService">
@@ -971,56 +997,126 @@ data:
             <property name="executeSql" value="${prop.mvDbTypeAmount}" />
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="" />
+            <property name="pwd" value="aIzFD0oEUa" />
         </bean>
         <bean id="mvSqlExecuteAmountTask" class="cn.bintools.cloudquery.analyze.service.CalculateService">
             <property name="tableName" value="mv_sql_execute_amount" />
             <property name="executeSql" value="${prop.mvSqlExecuteAmount}" />
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="" />
+            <property name="pwd" value="aIzFD0oEUa" />
+        </bean>
+        <bean id="mvAllAuditAmountTask" class="cn.bintools.cloudquery.analyze.service.CalculateService">
+            <property name="tableName" value="mv_all_audit_amount" />
+            <property name="executeSql" value="${prop.mvAllAuditAmount}" />
+            <property name="url" value="${connection.url}" />
+            <property name="user" value="${connection.user}" />
+            <property name="pwd" value="aIzFD0oEUa" />
         </bean>
         <bean id="mvSqlExecuteErrorAmountTask" class="cn.bintools.cloudquery.analyze.service.CalculateService">
             <property name="tableName" value="mv_sql_execute_error_amount" />
             <property name="executeSql" value="${prop.mvSqlExecuteErrorAmount}" />
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="" />
+            <property name="pwd" value="aIzFD0oEUa" />
         </bean>
         <bean id="mvTodaySqlExecuteAmountTask" class="cn.bintools.cloudquery.analyze.service.CalculateService">
             <property name="tableName" value="mv_today_sql_execute_amount" />
             <property name="executeSql" value="${prop.mvTodaySqlExecuteAmount}" />
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="" />
+            <property name="pwd" value="aIzFD0oEUa" />
         </bean>
         <bean id="mvMonthSqlExecuteAmountTask" class="cn.bintools.cloudquery.analyze.service.CalculateService">
             <property name="tableName" value="mv_month_sql_execute_amount" />
             <property name="executeSql" value="${prop.mvMonthSqlExecuteAmount}" />
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="" />
+            <property name="pwd" value="aIzFD0oEUa" />
         </bean>
         <bean id="mvTodaySqlOperateAmountTask" class="cn.bintools.cloudquery.analyze.service.CalculateService">
             <property name="tableName" value="mv_today_sql_operate_amount" />
             <property name="executeSql" value="${prop.mvTodaySqlOperateAmount}" />
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="" />
+            <property name="pwd" value="aIzFD0oEUa" />
         </bean>
         <bean id="mvMonthSqlOperateAmountTask" class="cn.bintools.cloudquery.analyze.service.CalculateService">
             <property name="tableName" value="mv_month_sql_operate_amount" />
             <property name="executeSql" value="${prop.mvMonthSqlOperateAmount}" />
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="" />
+            <property name="pwd" value="aIzFD0oEUa" />
         </bean>
         <bean id="mvTodaySqlExecuteErrorAmountTask" class="cn.bintools.cloudquery.analyze.service.CalculateService">
             <property name="tableName" value="mv_today_sql_execute_error_amount" />
             <property name="executeSql" value="${prop.mvTodaySqlExecuteErrorAmount}" />
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="" />
+            <property name="pwd" value="aIzFD0oEUa" />
+        </bean>
+        <bean id="mvMonthSqlExecuteErrorAmountTask" class="cn.bintools.cloudquery.analyze.service.CalculateService">
+            <property name="tableName" value="mv_month_sql_execute_error_amount" />
+            <property name="executeSql" value="${prop.mvMonthSqlExecuteErrorAmount}" />
+            <property name="url" value="${connection.url}" />
+            <property name="user" value="${connection.user}" />
+            <property name="pwd" value="aIzFD0oEUa" />
+        </bean>
+        <bean id="mvLastMonthOperateAmountTask" class="cn.bintools.cloudquery.analyze.service.CalculateService">
+            <property name="tableName" value="mv_last_month_operate_amount" />
+            <property name="executeSql" value="${prop.mvLastMonthOperateAmount}" />
+            <property name="url" value="${connection.url}" />
+            <property name="user" value="${connection.user}" />
+            <property name="pwd" value="aIzFD0oEUa" />
+        </bean>
+        <bean id="mvLastMonthSqlExecuteAmountTask" class="cn.bintools.cloudquery.analyze.service.CalculateService">
+            <property name="tableName" value="mv_last_month_sql_execute_amount" />
+            <property name="executeSql" value="${prop.mvLastMonthSqlExecuteAmount}" />
+            <property name="url" value="${connection.url}" />
+            <property name="user" value="${connection.user}" />
+            <property name="pwd" value="aIzFD0oEUa" />
+        </bean>
+        <bean id="mvLastDayOperateAmountTask" class="cn.bintools.cloudquery.analyze.service.CalculateService">
+            <property name="tableName" value="mv_last_day_operate_amount" />
+            <property name="executeSql" value="${prop.mvLastDayOperateAmount}" />
+            <property name="url" value="${connection.url}" />
+            <property name="user" value="${connection.user}" />
+            <property name="pwd" value="aIzFD0oEUa" />
+        </bean>
+        <bean id="mvLastDaySqlExecuteAmountTask" class="cn.bintools.cloudquery.analyze.service.CalculateService">
+            <property name="tableName" value="mv_last_day_sql_execute_amount" />
+            <property name="executeSql" value="${prop.mvLastDaySqlExecuteAmount}" />
+            <property name="url" value="${connection.url}" />
+            <property name="user" value="${connection.user}" />
+            <property name="pwd" value="aIzFD0oEUa" />
+        </bean>
+        <bean id="mvMonthHighRiskSqlAmountTask" class="cn.bintools.cloudquery.analyze.service.CalculateService">
+            <property name="tableName" value="mv_month_high_risk_sql_amount" />
+            <property name="executeSql" value="${prop.mvMonthHighRiskSqlAmount}" />
+            <property name="url" value="${connection.url}" />
+            <property name="user" value="${connection.user}" />
+            <property name="pwd" value="aIzFD0oEUa" />
+        </bean>
+        <bean id="mvTodayHighRiskSqlAmountTask" class="cn.bintools.cloudquery.analyze.service.CalculateService">
+            <property name="tableName" value="mv_today_high_risk_sql_amount" />
+            <property name="executeSql" value="${prop.mvTodayHighRiskSqlAmount}" />
+            <property name="url" value="${connection.url}" />
+            <property name="user" value="${connection.user}" />
+            <property name="pwd" value="aIzFD0oEUa" />
+        </bean>
+        <bean id="mvMonthOverPermAmountTask" class="cn.bintools.cloudquery.analyze.service.CalculateService">
+            <property name="tableName" value="mv_month_over_perm_amount" />
+            <property name="executeSql" value="${prop.mvMonthOverPermAmount}" />
+            <property name="url" value="${connection.url}" />
+            <property name="user" value="${connection.user}" />
+            <property name="pwd" value="aIzFD0oEUa" />
+        </bean>
+        <bean id="mvDayOverPermAmountTask" class="cn.bintools.cloudquery.analyze.service.CalculateService">
+            <property name="tableName" value="mv_today_over_perm_amount" />
+            <property name="executeSql" value="${prop.mvDayOverPermAmount}" />
+            <property name="url" value="${connection.url}" />
+            <property name="user" value="${connection.user}" />
+            <property name="pwd" value="aIzFD0oEUa" />
         </bean>
 
         <bean id="mvDbExecuteAvgHoursTask" class="cn.bintools.cloudquery.analyze.service.CalculateService">
@@ -1028,28 +1124,28 @@ data:
             <property name="executeSql" value="${prop.mvDbExecuteAvgHours}" />
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="" />
+            <property name="pwd" value="aIzFD0oEUa" />
         </bean>
         <bean id="mvDbExecuteAvgDaysTask" class="cn.bintools.cloudquery.analyze.service.CalculateService">
             <property name="tableName" value="mv_db_execute_avg_days" />
             <property name="executeSql" value="${prop.mvDbExecuteAvgDays}" />
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="" />
+            <property name="pwd" value="aIzFD0oEUa" />
         </bean>
         <bean id="mvDbExecuteAvgMonthsTask" class="cn.bintools.cloudquery.analyze.service.CalculateService">
             <property name="tableName" value="mv_db_execute_avg_months" />
             <property name="executeSql" value="${prop.mvDbExecuteAvgMonths}" />
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="" />
+            <property name="pwd" value="aIzFD0oEUa" />
         </bean>
 
         <!--    生成dws层大宽表-->
         <bean id="dwsExtrat" class="cn.bintools.cloudquery.analyze.service.CalculateService">
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="" />
+            <property name="pwd" value="aIzFD0oEUa" />
             <property name="tasks">
                 <list value-type="cn.bintools.cloudquery.analyze.pojo.model.CalculateTask">
                     <ref bean="dwdExtratModel"/>
@@ -1067,7 +1163,7 @@ data:
         <bean id="dwsOperate" class="cn.bintools.cloudquery.analyze.service.CalculateService">
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="" />
+            <property name="pwd" value="aIzFD0oEUa" />
             <property name="tasks">
                 <list value-type="cn.bintools.cloudquery.analyze.pojo.model.CalculateTask">
                     <ref bean="dwdOperateModel"/>
@@ -1084,7 +1180,7 @@ data:
         <bean id="dwsAuth" class="cn.bintools.cloudquery.analyze.service.CalculateService">
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="" />
+            <property name="pwd" value="aIzFD0oEUa" />
             <property name="tasks">
                 <list value-type="cn.bintools.cloudquery.analyze.pojo.model.CalculateTask">
                     <ref bean="dwdAuthModel"/>
@@ -1101,7 +1197,7 @@ data:
         <bean id="calculateOrgRelation"  class="cn.bintools.cloudquery.analyze.service.CalculateService">
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="" />
+            <property name="pwd" value="aIzFD0oEUa" />
         </bean>
 
 
@@ -1121,6 +1217,7 @@ data:
             <task:scheduled ref="mvAuditRecordHoursTask" method="flashMv" cron="5 */3 * * * ?"/>
             <task:scheduled ref="mvAuditRecordDaysTask" method="flashMv" cron="10 */3 * * * ?"/>
             <task:scheduled ref="mvAuditRecordMonths" method="flashMv" cron="15 */3 * * * ?"/>
+            <task:scheduled ref="mvUserFlowAmountTask" method="flashMv" cron="17 */3 * * * ?"/>
             <task:scheduled ref="mvUserAmountTask" method="flashMv" cron="20 */3 * * * ?"/>
             <task:scheduled ref="mvUserAmountHoursTask" method="flashMv" cron="25 */3 * * * ?"/>
             <task:scheduled ref="mvUserAmountDaysTask" method="flashMv" cron="30 */3 * * * ?"/>
@@ -1128,6 +1225,8 @@ data:
             <task:scheduled ref="mvUserAmountQuatersTask" method="flashMv" cron="40 */3 * * * ?"/>
             <task:scheduled ref="mvUserAmountWeeksTask" method="flashMv" cron="45 */3 * * * ?"/>
             <task:scheduled ref="mvUserAmountYearsTask" method="flashMv" cron="50 */3 * * * ?"/>
+            <task:scheduled ref="mvRecordHoursTask" method="flashMv" cron="55 */3 * * * ?"/>
+            <task:scheduled ref="mvRecordDaysTask" method="flashMv" cron="59 */3 * * * ?"/>
 
 
             <task:scheduled ref="mvOrgObjectTimeAmountTask" method="calculateSql4DimTime" cron="2 */4 * * * ?"/>
@@ -1147,13 +1246,23 @@ data:
 
             <task:scheduled ref="mvDbTypeAmountTask" method="flashMv" cron="4 */3 * * * ?"/>
             <task:scheduled ref="mvSqlExecuteAmountTask" method="flashMv" cron="9 */3 * * * ?"/>
+            <task:scheduled ref="mvAllAuditAmountTask" method="flashMv" cron="12 */3 * * * ?"/>
             <task:scheduled ref="mvSqlExecuteErrorAmountTask" method="flashMv" cron="14 */3 * * * ?"/>
             <task:scheduled ref="mvTodaySqlExecuteAmountTask" method="flashMv" cron="19 */3 * * * ?"/>
             <task:scheduled ref="mvMonthSqlExecuteAmountTask" method="flashMv" cron="24 */3 * * * ?"/>
             <task:scheduled ref="mvTodaySqlOperateAmountTask" method="flashMv" cron="29 */3 * * * ?"/>
             <task:scheduled ref="mvMonthSqlOperateAmountTask" method="flashMv" cron="34 */3 * * * ?"/>
+            <task:scheduled ref="mvLastDaySqlExecuteAmountTask" method="flashMv" cron="17 */3 * * * ?"/>
+            <task:scheduled ref="mvLastDayOperateAmountTask" method="flashMv" cron="22 */3 * * * ?"/>
+            <task:scheduled ref="mvLastMonthOperateAmountTask" method="flashMv" cron="27 */3 * * * ?"/>
+            <task:scheduled ref="mvLastMonthSqlExecuteAmountTask" method="flashMv" cron="32 */3 * * * ?"/>
             <task:scheduled ref="mvTodaySqlExecuteErrorAmountTask" method="flashMv" cron="39 */3 * * * ?"/>
+            <task:scheduled ref="mvMonthSqlExecuteErrorAmountTask" method="flashMv" cron="42 */3 * * * ?"/>
             <task:scheduled ref="mvDbExecuteAvgHoursTask" method="flashMv" cron="44 */3 * * * ?"/>
+            <task:scheduled ref="mvMonthHighRiskSqlAmountTask" method="flashMv" cron="47 */3 * * * ?"/>
+            <task:scheduled ref="mvTodayHighRiskSqlAmountTask" method="flashMv" cron="52 */3 * * * ?"/>
+            <task:scheduled ref="mvMonthOverPermAmountTask" method="flashMv" cron="57 */3 * * * ?"/>
+            <task:scheduled ref="mvDayOverPermAmountTask" method="flashMv" cron="59 */3 * * * ?"/>
             <task:scheduled ref="mvDbExecuteAvgDaysTask" method="flashMv" cron="49 */3 * * * ?"/>
             <task:scheduled ref="mvDbExecuteAvgMonthsTask" method="flashMv" cron="54 */3 * * * ?"/>
 
@@ -1161,6 +1270,7 @@ data:
             <task:scheduled ref="dwsOperate" method="calculateSql" cron="0 */1 * * * ?"/>
             <task:scheduled ref="dwsAuth" method="calculateSql" cron="0 */1 * * * ?"/>
         </task:scheduled-tasks>
+    </beans>
   sql.properties: |
     connection.url=jdbc:clickhouse://cloudquery-clickhouse:8123/default?rewriteBatchedStatements=true&use_server_time_zone=Asia/Shanghai&use_time_zone=Asia/Shanghai
     connection.user=admin
@@ -1198,7 +1308,7 @@ data:
     prop.mvAuditRecordDays=insert into default.mv_audit_record_days SELECT c.years, c.months, c.days, c.log_type, sum(c.amount) AS amount FROM mv_audit_record_hours c GROUP BY c.years, c.months, c.days, c.log_type;
     prop.mvAuditRecordMonths=insert into default.mv_audit_record_months SELECT c.years, c.months, c.log_type, sum(c.amount) AS amount FROM mv_audit_record_days c GROUP BY c.years, c.months, c.log_type;
 
-    prop.mvUserAmount=insert into default.mv_user_amount SELECT c_1.years, c_1.months, c_1.days, c_1.hours, c_1.user_id, count(1) AS amount, c_1.quarters, c_1.weeks FROM (SELECT date_trunc('year', begin_time)  as years, date_trunc('month', begin_time) as months, date_trunc('day', begin_time)   as days, date_trunc('hour', begin_time)  as hours, date_trunc('quarter', begin_time)  as quarters, date_trunc('week', begin_time)  as weeks, user_id FROM dws_audit t1 WHERE date_trunc('hour', begin_time) < (date_trunc('day', now()) + interval 1 day) AND t1.user_id IS NOT NULL) c_1 GROUP BY c_1.years, c_1.months, c_1.days, c_1.hours, c_1.user_id, c_1.quarters, c_1.weeks;
+    prop.mvUserAmount=insert into default.mv_user_amount SELECT c_1.years, c_1.months, c_1.days, c_1.hours, c_1.user_id, count(1) AS amount, c_1.quarters, c_1.weeks FROM (SELECT date_trunc('year', begin_time)    as years, date_trunc('month', begin_time)   as months, date_trunc('day', begin_time)     as days, date_trunc('hour', begin_time)    as hours, date_trunc('quarter', begin_time) as quarters, date_trunc('week', begin_time)    as weeks, user_id FROM dws_audit t1 WHERE date_trunc('hour', begin_time) < (date_trunc('day', now()) + interval 1 day) AND t1.user_id IS NOT NULL AND user_id in (select dwd_dim_user.user_id from dwd_dim_user where is_deleted = false) ) c_1 GROUP BY c_1.years, c_1.months, c_1.days, c_1.hours, c_1.user_id, c_1.quarters, c_1.weeks;
     prop.mvUserAmountHours=insert into default.mv_user_amount_hours SELECT cc.years, cc.months, cc.days, cc.hours, sum(amount) AS amount FROM ( SELECT cc_1.years, cc_1.months, cc_1.days, cc_1.hours, cc_1.user_id, sum(cc_1.amount) AS amount FROM mv_user_amount cc_1 GROUP BY cc_1.years, cc_1.months, cc_1.days, cc_1.hours, cc_1.user_id) cc GROUP BY cc.years, cc.months, cc.days, cc.hours;
     prop.mvUserAmountDays=insert into default.mv_user_amount_days SELECT cc.years, cc.months, cc.days, sum(amount) AS amount FROM ( SELECT cc_1.years, cc_1.months, cc_1.days, cc_1.user_id, sum(cc_1.amount) AS amount FROM mv_user_amount cc_1 GROUP BY cc_1.years, cc_1.months, cc_1.days, cc_1.user_id) cc GROUP BY cc.years, cc.months, cc.days;
     prop.mvUserAmountMonths=insert into default.mv_user_amount_months SELECT cc.years, cc.months, sum(amount) AS amount FROM ( SELECT cc_1.years, cc_1.months, cc_1.user_id, sum(cc_1.amount) AS amount FROM mv_user_amount cc_1 GROUP BY cc_1.years, cc_1.months, cc_1.user_id) cc GROUP BY cc.years, cc.months;
@@ -1208,12 +1318,28 @@ data:
 
     prop.mvDbTypeAmount=insert into default.mv_db_type_amount SELECT a.db_type AS db_type, count(*) AS amount FROM dws_audit a where a.target_type = 'CQ_EXTRAT' GROUP BY a.db_type;
     prop.mvSqlExecuteAmount=insert into default.mv_sql_execute_amount SELECT count(*) AS amount FROM dws_audit where target_type = 'CQ_EXTRAT';
+    prop.mvAllAuditAmount=insert into default.mv_all_audit_amount SELECT count(*) AS amount FROM dws_audit;
     prop.mvSqlExecuteErrorAmount=insert into default.mv_sql_execute_error_amount SELECT count(*) AS amount FROM dws_audit a WHERE a.result_flag = 0 AND a.target_type = 'CQ_EXTRAT';
     prop.mvTodaySqlExecuteAmount=insert into mv_today_sql_execute_amount SELECT count(*) AS amount FROM dws_audit f where target_type = 'CQ_EXTRAT' and f.created_time > date_trunc('day', now());
     prop.mvMonthSqlExecuteAmount=insert into mv_month_sql_execute_amount SELECT count(*) AS amount FROM dws_audit f where target_type = 'CQ_EXTRAT' and f.created_time > date_trunc('month', now());
     prop.mvTodaySqlOperateAmount=insert into mv_today_sql_operate_amount SELECT count(*) AS amount FROM dws_audit f where target_type = 'CQ_SYSTEM' and f.created_time > date_trunc('day', now());
     prop.mvMonthSqlOperateAmount=insert into mv_month_sql_operate_amount SELECT count(*) AS amount FROM dws_audit f where target_type = 'CQ_SYSTEM' and f.created_time > date_trunc('month', now());
     prop.mvTodaySqlExecuteErrorAmount=insert into mv_today_sql_execute_error_amount SELECT count(*) AS amount FROM dws_audit a WHERE a.result_flag = 0 AND a.target_type = 'CQ_EXTRAT' and a.created_time > date_trunc('day', now());
+
+    prop.mvMonthSqlExecuteErrorAmount=insert into mv_month_sql_execute_error_amount SELECT count(*) AS amount FROM dws_audit a WHERE a.result_flag = 0 AND a.target_type = 'CQ_EXTRAT' and a.created_time > date_trunc('month', now());
+    prop.mvLastDaySqlExecuteAmount=insert into mv_last_day_sql_execute_amount SELECT count(*) AS amount FROM dws_audit f where target_type = 'CQ_EXTRAT' and f.created_time > date_trunc('day', now() - INTERVAL 1 day) and f.created_time < date_trunc('day', now());
+    prop.mvLastDayOperateAmount=insert into mv_last_day_operate_amount SELECT count(*) AS amount FROM dws_audit f where target_type = 'CQ_SYSTEM' and f.created_time > date_trunc('day', now() - INTERVAL 1 day) and f.created_time < date_trunc('day', now());
+    prop.mvLastMonthSqlExecuteAmount=insert into mv_last_month_sql_execute_amount SELECT count(*) AS amount FROM dws_audit f where target_type = 'CQ_EXTRAT' and f.created_time > date_trunc('month', now() - INTERVAL 1 month) and f.created_time < date_trunc('month', now());
+    prop.mvLastMonthOperateAmount=insert into mv_last_month_operate_amount SELECT count(*) AS amount FROM dws_audit f where target_type = 'CQ_SYSTEM' and f.created_time > date_trunc('month', now() - INTERVAL 1 month) and f.created_time < date_trunc('month', now());
+    prop.mvMonthHighRiskSqlAmount=insert into mv_month_high_risk_sql_amount select count(*) from dws_audit where target_type = 'CQ_EXTRAT' and (operate_type like '%DROP%' or operate_type like '%DELETE%' or operate_type like '%GRANT%') and created_time > date_trunc('month', now());
+    prop.mvTodayHighRiskSqlAmount=insert into mv_today_high_risk_sql_amount select count(*) from dws_audit where target_type = 'CQ_EXTRAT' and (operate_type like '%DROP%' or operate_type like '%DELETE%' or operate_type like '%GRANT%') and created_time > date_trunc('day', now())
+    prop.mvMonthOverPermAmount=insert into mv_month_over_perm_amount select count(*) from dws_audit where (error_msg like '%没有操作权限%' or error_msg like '%请提权处理%') and created_time > date_trunc('month', now());
+    prop.mvDayOverPermAmount=insert into mv_today_over_perm_amount select count(*) from dws_audit where (error_msg like '%没有操作权限%' or error_msg like '%请提权处理%') and created_time > date_trunc('day', now());
+
+    prop.mvRecordHours=insert into default.mv_record_hours SELECT c.years, c.months, c.days, c.hours, sum(1) AS amount FROM (SELECT date_trunc('year', t1.created_time)  as years, date_trunc('month', t1.created_time) as months, date_trunc('day', t1.created_time)   as days, date_trunc('hour', t1.created_time)  as hours, t1.db_type FROM dws_audit t1 WHERE date_trunc('hour', t1.begin_time) < (date_trunc('day', now()) + interval 1 day)) c GROUP BY c.years, c.months, c.days, c.hours;
+    prop.mvRecordDays=insert into default.mv_record_days SELECT c.years, c.months, c.days, sum(c.amount) AS amount FROM mv_record_hours c GROUP BY c.years, c.months, c.days;
+
+    prop.mvUserFlowAmount=insert into default.mv_user_flow_amount select t2.years, t2.months, t2.days, sum(pass) as pass_amount, sum(refuse) as refuse_amount from (SELECT date_trunc('year', begin_time)       as years, date_trunc('month', begin_time)      as months, date_trunc('day', begin_time)        as days, if(t1.operate_type = 'PASS', 1, 0)   as pass, if(t1.operate_type = 'REFUSE', 1, 0) as refuse FROM dws_audit t1 WHERE date_trunc('day', begin_time) < (date_trunc('month', now()) + interval 1 month)) t2 group by years, months, days
 
     prop.mvDbExecuteAvgHours= insert into default.mv_db_execute_avg_hours SELECT t1.years, t1.months, t1.days, t1.hours, sum(if(t1.execute_cost IS NOT NULL, t1.execute_cost, 0))                   AS execute_cost, round(sum(if(t1.execute_cost IS NOT NULL, t1.execute_cost, 0)) / count(*)) AS execute_avg, count(*) AS execute_amount, t1.connection_name, t1.db_name FROM (SELECT date_trunc('year', c.created_time) AS years, date_trunc('month', c.created_time) AS months, date_trunc('day', c.created_time) AS days, date_trunc('hour', c.created_time) AS hours, c.execute_cost, c.entry_point AS connection_name, c.db_name AS db_name FROM dws_audit c WHERE date_trunc('hour', c.created_time) < (date_trunc('day', now()) + interval 1 day) AND c.port IS NOT NULL AND c.target_type = 'CQ_EXTRAT') t1 GROUP BY t1.years, t1.months, t1.days, t1.hours, t1.connection_name, t1.db_name;
     prop.mvDbExecuteAvgDays=insert into default.mv_db_execute_avg_days SELECT c.years, c.months, c.days, sum(c.execute_cost) AS execute_cost, sum(c.execute_amount) AS execute_amount, round(sum(c.execute_cost) / sum(c.execute_amount)) AS execute_avg, c.connection_name, c.db_name FROM mv_db_execute_avg_hours c GROUP BY c.years, c.months, c.days, c.connection_name, c.db_name;

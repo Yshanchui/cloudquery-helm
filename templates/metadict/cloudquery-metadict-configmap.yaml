@@ -74,7 +74,7 @@ data:
             show_sql: false
             jdbc:
               batch_size: 250
-              time_zone: UTC
+              time_zone: Asia/Shanghai
 
         hibernate:
           ddl-auto: validate
@@ -82,7 +82,7 @@ data:
 
       redis:
         database: 1
-        host: {{ .Values.redis.addr }}
+        host: cloudquery-redis-master
         port: 6379
         password: nya6X#uSes@
 
@@ -98,7 +98,7 @@ data:
       protocol:
         id: metadict
         name: dubbo
-        port: 12345
+        port: 10087
         serialization: kryo
       registry:
         id: zookeeper-metadictProd
@@ -113,3 +113,57 @@ data:
       server_home: /opt/cloudquery/dmc/dms_home
       module_directory: /opt/cloudquery/dmc/modules
       stg: /opt/cloudquery/dmc/modules
+      task:
+        lock:
+          #获取任务锁超时时间，秒
+          get_task_lock_timeout: 20
+          #写索引文件锁超时时间，这个时间要大于create_index/delete_index时间，秒
+          write_index_lock_timeout: 300
+          #扫描锁超时时间
+          scan_sync_lock_timeout: 60
+        #同步扫描任务，寻找未同步任务添加到队列中
+        scan_sync_scheduler:
+          #表达式
+          #0 0 4 * * * 表示每天凌晨4点执行任务。
+          #0 0/30 2-4 * * * 表示在每天凌晨2点到4点之间，每隔30分钟执行一次任务，默认配置。
+          #0 0 12 ? * WED 表示每周三中午12点执行任务。
+          #0 0 3-5 * * * 表示每天凌晨3点到5点之间，每小时执行一次任务。
+          #0 15 10 L * ? 表示每个月的最后一天上午10:15分执行任务。
+          cron: 0 0/30 2-4 * * *
+          #同一连接 60*24*7分钟内(7天) 不进行重复同步，单位分钟
+          re_sync_time: 10080
+        #数据同步任务
+        data_build_scheduler:
+          #从项目启动 60 秒后开始第一次，单位毫秒
+          initial_delay: 60000
+          #每 5 秒检查一次，单位毫秒
+          fixed_delay: 5000
+          #核心线程数
+          core_pool_size: 0
+          #最大线程数，每台机器能同时进行多少个任务
+          maximum_pool_size: 2
+          #线程空闲超时时间，秒
+          keep_alive_time: 120
+          #分布式选项，如果开启则主机与从机同时同步，不开启则等主机宕机后从机才开始同步
+          distributed_enable: true
+          #心跳时间，如果超时未设置，则认为宕机，更换机器同步，仅在分布式选项关闭生效
+          #时间要大于fixed_delay 10s，默认60s，单位秒
+          heart_time_out: 60
+        #索引创建任务
+        index_build_scheduler:
+          #从项目启动 30 秒后开始第一次，单位毫秒
+          initial_delay: 30000
+          #每 2 秒检查一次，单位毫秒
+          fixed_delay: 2000
+          #心跳时间，如果超时未设置，则认为宕机，更换机器同步
+          #时间要大于fixed_delay 10s，默认60s，单位秒
+          heart_time_out: 60
+        #运行超时后归类死任务，直接认为失败，秒
+        run_timeout:
+          #索引，时间要小于write_index_lock_timeout
+          create_index: 240
+          delete_index: 180
+          #同步，以 mysql 1万条数据 为例大概 540 秒，这里默认给的 1 个小时
+          incremental_sync: 3600
+          full_sync: 3600
+          delete_sync: 900

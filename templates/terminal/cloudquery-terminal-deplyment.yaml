@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: cloudquery-terminal
-          image: yshanchui/cloudquery-base-terminal:cloudquery-club-V2.3.0
+          image: yshanchui/cloudquery-base-terminal:cloudquery-club-V2.4.0
           command: ["sh", "-c"]
           args:
             - "/opt/cloudquery/terminal -p 9950 -w -ws-origin .* --audit-url http://cloudquery-analyze:9007/analyze/extract/extract_log"

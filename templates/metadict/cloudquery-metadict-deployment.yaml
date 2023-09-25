@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: cloudquery-metadict
-          image: yshanchui/cloudquery-metadict:cloudquery-club-V2.3.0
+          image: yshanchui/cloudquery-metadict:cloudquery-club-V2.4.0
           env:
             - name: _JAVA_OPTIONS
               value: -Xmx1g -Xms1g

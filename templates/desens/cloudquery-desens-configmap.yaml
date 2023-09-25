@@ -29,7 +29,7 @@ data:
           max-file-size: 10MB
           max-request-size: 10MB
           location: ${java.io.tmpdir}
-
+    
       application:
         name: cloudquery-desensProd
       jackson:
@@ -37,7 +37,7 @@ data:
         date-format: yyyy-MM-dd HH:mm:ss
       redis:
         database: 1
-        host: {{ .Values.redis.addr }}
+        host: cloudquery-redis-master
         port: 6379
         password: nya6X#uSes@
         timeout: 5000
@@ -74,7 +74,7 @@ data:
     dubbo:
       scan:
         base-packages: cn.bintools.cloudquery.desens
-
+    
       application:
         id: cloudquery-desens
         name: cloudquery-desens
@@ -87,8 +87,8 @@ data:
         port: 12367
         payload: 20971520
         serialization: kryo
-
-
+    
+    
       registry:
         id: zookeeper
         address: zookeeper://cloudquery-zookeeper:2181
@@ -96,13 +96,13 @@ data:
         timeout: 300000
         group: cloudquery_test1
         check: false
-
+    
     desens:
       # 定义dm module 路径
       server_home: /opt/cloudquery/dmc/dms_home
       module_directory: /opt/cloudquery/dmc/modules
       stg: /opt/cloudquery/dmc/modules
-
+    
     springdoc:
       api-docs:
         enabled: false

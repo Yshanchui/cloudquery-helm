@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: user
-          image: yshanchui/cloudquery-user:cloudquery-club-V2.3.0
+          image: yshanchui/cloudquery-user:cloudquery-club-V2.4.0
           env:
             - name: CLOUDQUERY_HOME
               value: /opt/cloudquery/data

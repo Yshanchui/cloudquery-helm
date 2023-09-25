@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: dms
-          image: yshanchui/cloudquery-dms:cloudquery-club-V2.3.0
+          image: yshanchui/cloudquery-dms:cloudquery-club-V2.4.0
           env:
             - name: LANG
               value: C.UTF-8

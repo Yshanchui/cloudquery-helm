@@ -15,7 +15,7 @@ spec:
         app: enterprise-web
     spec:
       containers:
-        - image: yshanchui/cloudquery-base-web:cloudquery-club-V2.3.0
+        - image: yshanchui/cloudquery-base-web:cloudquery-club-V2.4.0
           name: enterprise-web
           ports:
             - containerPort: 9898
