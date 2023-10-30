@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: cloudquery-clickhouse
+  namespace: cloudquery
+spec:
+  replicas: 1  # 你可以根据需要更改副本数
+  selector:
+    matchLabels:
+      app: cloudquery-clickhouse
+  template:
+    metadata:
+      labels:
+        app: cloudquery-clickhouse
+    spec:
+      containers:
+        - name: cloudquery-clickhouse
+          image: bitnami/clickhouse:23.9.2  # 使用适当的 ClickHouse 版本
+          env:
+            - name: ALLOW_EMPTY_PASSWORD
+              value: "yes"
+          ports:
+            - containerPort: 8123
+            - containerPort: 9000
+          volumeMounts:
+            - name: cloudquery-clickhouse-data
+              mountPath: /var/lib/clickhouse
+  volumeClaimTemplates:
+    - metadata:
+        name: cloudquery-clickhouse-data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: {{ .Values.storageClassName }} # 选择适当的存储类
+        resources:
+          requests:
+            storage: 10Gi  # 根据需求调整存储大小

@@ -12,7 +12,7 @@ data:
           connect-string: cloudquery-zookeeper:2181
       application:
         name: cloudquery-user
-
+      
       jackson:
         time-zone: GMT+8
       profiles:
@@ -20,11 +20,11 @@ data:
       redis:
         timeout: 5000
         database: 1
-        host: cloudquery-redis-master
+        host: cloudquery-redis
         port: 6379
         password: nya6X#uSes@
       datasource:
-        url: jdbc:postgresql://cloudquery-postgresql:5432/postgres
+        url: jdbc:postgresql://cloudquery-postgreSQL:5432/postgres
         username: postgres
         password: WVCmFZs841@
         driver-class-name: org.postgresql.Driver
@@ -50,7 +50,7 @@ data:
           max-request-size: 1024MB
       swagger:
         enable: true
-
+    
     server:
       servlet:
         context-path: /user
@@ -66,7 +66,7 @@ data:
     user:
       server_home: /opt/cloudquery/dmc/dms_home
       module_directory: /opt/cloudquery/dmc/modules
-      images: /work/JK_WorkSpace/一键打包_前端后端审计_base-2.4.4.1开始_ARM_X86_K8S_全部加密_企业版社区版/34/cloudquery-base2/cloudquery-user/ignore/images
+      images:  /opt/cloudquery/user/images
       avatars:
         dir: /opt/cloudquery/avatars
         extname: jpg,png
@@ -81,15 +81,15 @@ data:
       # 通信加密算法，支持 RSA，SM2，若不配置，默认是 RSA
       # transmission_algorithm: RSA
       # 存储加密算法，支持 DES、AES，若不配置，默认是 DES
-      # storage_algorithm: AES
+      # storage_algorithm: DES
       # 存储加密密钥，若不配置，使用系统默认密钥，DES默认密钥：XZFnM2rwkJg8qsKmBYIQauHS  AES默认密钥：BlztWtMNhtNHUZNv0wIUzw==
-      # storage_algorithm_key: BlztWtMNhtNHUZNv0wIUzw==
+      # storage_algorithm_key: XZFnM2rwkJg8qsKmBYIQauHS
     #login.limit 没有定义时默认为0，不限制单个账号登录会话数。 当login.limit > 0时才限制单个账号登录会话数。
     #  login:
     #    limit: 0
     sms:
       host: localhost:8080/post
-
+    
     cloudquery:
       home: ${CLOUDQUERY_HOME:/opt/cloudquery/data}
       system:
@@ -115,8 +115,8 @@ data:
         name: dubbo
         port: 12345
         payload: 20971520
-
-
+    
+    
       registry:
         id: zookeeper-userRelease
         address: zookeeper://cloudquery-zookeeper:2181
@@ -132,13 +132,13 @@ data:
       user: root
       password: Hello123$
       fsd-port: 9092
-
+    
     springdoc:
       api-docs:
         enabled: false
       swagger-ui:
         enabled: false
-
+    
     #短信网关配置
     SmsGateway:
       type: TestDemo

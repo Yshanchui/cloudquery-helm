@@ -76,13 +76,13 @@ data:
           keepalive 128;
       }
 
-     # upstream grafana_server{
-     #     server cloudquery-grafana:3000;
-     #  }
+      # upstream grafana_server{
+      #     server cloudquery-grafana:3000;
+      # }
 
       server {
         listen 9898;
-        server_name localhost cloudquery.devops.bloomeverybody.work; #监听的域名
+        server_name localhost 192.168.3.18 br.bintools.cn; #监听的域名
         client_max_body_size 120M;
         charset utf-8; #编码格式
         location ^~ /user {
@@ -198,80 +198,80 @@ data:
           proxy_set_header Connection "";
         }
 
-        location ^~ /d/ {
-        # proxy_pass http://grafana_server/d/;
-          proxy_set_header Host $host;
-          proxy_set_header X-Real-IP $remote_addr;
-          proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-          proxy_http_version 1.1;
-        }
+        # location ^~ /d/ {
+        #   proxy_pass http://grafana_server/d/;
+        #   proxy_set_header Host $host;
+        #   proxy_set_header X-Real-IP $remote_addr;
+        #   proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        #   proxy_http_version 1.1;
+        # }
 
-        location ^~ /public/ {
-        # proxy_pass http://grafana_server/public/;
-          proxy_set_header Host $host;
-          proxy_set_header X-Real-IP $remote_addr;
-          proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        }
+        # location ^~ /public/ {
+        #   proxy_pass http://grafana_server/public/;
+        #   proxy_set_header Host $host;
+        #   proxy_set_header X-Real-IP $remote_addr;
+        #   proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        # }
 
-        location ^~ /api/dashboards/ {
-        #  proxy_pass http://grafana_server/api/dashboards/;
-          proxy_set_header Host $host;
-          proxy_set_header X-Real-IP $remote_addr;
-          proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-          proxy_http_version 1.1;
-        }
+        # location ^~ /api/dashboards/ {
+        #   proxy_pass http://grafana_server/api/dashboards/;
+        #   proxy_set_header Host $host;
+        #   proxy_set_header X-Real-IP $remote_addr;
+        #   proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        #   proxy_http_version 1.1;
+        # }
 
-        location ^~ /api/datasources/ {
-        #  proxy_pass http://grafana_server/api/datasources/;
-          proxy_set_header Host $host;
-          proxy_set_header X-Real-IP $remote_addr;
-          proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-          proxy_http_version 1.1;
-        }
+        # location ^~ /api/datasources/ {
+        #   proxy_pass http://grafana_server/api/datasources/;
+        #   proxy_set_header Host $host;
+        #   proxy_set_header X-Real-IP $remote_addr;
+        #   proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        #   proxy_http_version 1.1;
+        # }
 
-        location ^~ /api/annotations {
-        #  proxy_pass http://grafana_server/api/annotations;
-          proxy_set_header Host $host;
-          proxy_set_header X-Real-IP $remote_addr;
-          proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-          proxy_http_version 1.1;
-        }
+        # location ^~ /api/annotations {
+        #   proxy_pass http://grafana_server/api/annotations;
+        #   proxy_set_header Host $host;
+        #   proxy_set_header X-Real-IP $remote_addr;
+        #   proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        #   proxy_http_version 1.1;
+        # }
 
-        location ^~ /api/search {
-        #  proxy_pass http://grafana_server/api/search;
-          proxy_set_header Host $host;
-          proxy_set_header X-Real-IP $remote_addr;
-          proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-          proxy_http_version 1.1;
-        }
+        # location ^~ /api/search {
+        #   proxy_pass http://grafana_server/api/search;
+        #   proxy_set_header Host $host;
+        #   proxy_set_header X-Real-IP $remote_addr;
+        #   proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        #   proxy_http_version 1.1;
+        # }
 
-        location ^~ /api/ds {
-        #  proxy_pass http://grafana_server/api/ds;
-          proxy_set_header Host $host;
-          proxy_set_header X-Real-IP $remote_addr;
-          proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-          proxy_http_version 1.1;
-          proxy_set_header Upgrade $http_upgrade;
-          proxy_set_header Connection "upgrade";
-        }
-        location ^~ /api/frontend-metrics {
-        #  proxy_pass http://grafana_server/api/frontend-metrics;
-          proxy_set_header Host $host;
-          proxy_set_header X-Real-IP $remote_addr;
-          proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-          proxy_http_version 1.1;
-          proxy_set_header Upgrade $http_upgrade;
-          proxy_set_header Connection "upgrade";
-        }
-        location ^~ /api/prometheus {
-        #  proxy_pass http://grafana_server/api/prometheus;
-          proxy_set_header Host $host;
-          proxy_set_header X-Real-IP $remote_addr;
-          proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-          proxy_http_version 1.1;
-          proxy_set_header Upgrade $http_upgrade;
-          proxy_set_header Connection "upgrade";
-        }
+        # location ^~ /api/ds {
+        #   proxy_pass http://grafana_server/api/ds;
+        #   proxy_set_header Host $host;
+        #   proxy_set_header X-Real-IP $remote_addr;
+        #   proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        #   proxy_http_version 1.1;
+        #   proxy_set_header Upgrade $http_upgrade;
+        #   proxy_set_header Connection "upgrade";
+        # }
+        # location ^~ /api/frontend-metrics {
+        #   proxy_pass http://grafana_server/api/frontend-metrics;
+        #   proxy_set_header Host $host;
+        #   proxy_set_header X-Real-IP $remote_addr;
+        #   proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        #   proxy_http_version 1.1;
+        #   proxy_set_header Upgrade $http_upgrade;
+        #   proxy_set_header Connection "upgrade";
+        # }
+        # location ^~ /api/prometheus {
+        #   proxy_pass http://grafana_server/api/prometheus;
+        #   proxy_set_header Host $host;
+        #   proxy_set_header X-Real-IP $remote_addr;
+        #   proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        #   proxy_http_version 1.1;
+        #   proxy_set_header Upgrade $http_upgrade;
+        #   proxy_set_header Connection "upgrade";
+        # }
 
 
         location / {

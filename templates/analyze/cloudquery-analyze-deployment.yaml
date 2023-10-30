@@ -16,22 +16,17 @@ spec:
     spec:
       containers:
         - name: cloudquery-analyze
-          image: yshanchui/cloudquery-analyze:cloudquery-club-V2.4.0
+          image: yshanchui/cloudquery-analyze:cloudquery-club-{{ .Values.version }}
           env:
             - name: _JAVA_OPTIONS
               value: -Xmx800m -Xms800m
           volumeMounts:
             - name: config-volume
               mountPath: /opt/cloudquery/config
-            - name: archive-volume
-              mountPath: /opt/cloudquery/archive
+#            - name: archive-volume
+#              mountPath: /opt/cloudquery/archive
           resources:
-            requests:
-              memory: "1Gi"
-              cpu: "100m"
-            limits:
-              memory: "1Gi"
-              cpu: "500m"
+            {{- toYaml .Values.resources | nindent 12 }}
       volumes:
         - name: config-volume
           configMap:
@@ -43,6 +38,6 @@ spec:
                 path: spring-context.xml
               - key: sql.properties
                 path: sql.properties
-        - name: archive-volume
-          persistentVolumeClaim:
-            claimName: cloudquery-analyze-archive
+#        - name: archive-volume
+#          persistentVolumeClaim:
+#            claimName: cloudquery-analyze-archive

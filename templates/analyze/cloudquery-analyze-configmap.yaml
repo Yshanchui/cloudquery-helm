@@ -26,7 +26,7 @@ data:
           enabled: true
         readinessstate:
           enabled: true
-
+    
     ## 增加mybatis配置
     mybatis:
       config-location: classpath:mybatis-config.xml
@@ -34,12 +34,12 @@ data:
       mapper-locations: classpath*:mapper/*.xml
     version:
       script-path: /opt/cloudquery/script-path
-
+    
     measurement:
       ## 慢sql时间，单位 ms
       slow-sql-time: 500
       high-risk-operate: DELETE,DROP,GRANT
-
+    
     #数据库配置
     spring:
       context:
@@ -56,18 +56,18 @@ data:
         time-zone: GMT+8
       redis:
         database: 1
-        host: cloudquery-redis-master
+        host: cloudquery-redis
         port: 6379
         password: nya6X#uSes@
       datasource:
-        jdbc-url: jdbc:postgresql://cloudquery-postgresql:5432/postgres?TimeZone=Asia/Shanghai
+        jdbc-url: jdbc:postgresql://cloudquery-postgreSQL:5432/postgres?TimeZone=Asia/Shanghai
         username: postgres
         password: WVCmFZs841@
         driver-class-name: org.postgresql.Driver
         ck:
           jdbc-url: jdbc:clickhouse://cloudquery-clickhouse:8123/default?rewriteBatchedStatements=true&use_server_time_zone=Asia/Shanghai&use_time_zone=Asia/Shanghai
-          username: admin
-          password: aIzFD0oEUa
+          username: default
+          password:
           driver-class-name: ru.yandex.clickhouse.ClickHouseDriver
       jpa:
         show-sql: false
@@ -109,8 +109,8 @@ data:
         name: dubbo
         port: 12370
         payload: 20971520
-
-
+    
+    
       registry:
         id: zookeeper-analyzeDev
         address: zookeeper://cloudquery-zookeeper:2181
@@ -118,7 +118,7 @@ data:
         timeout: 300000
         group: cloudquery_test1
         check: false
-
+    
     archive:
       enabled: false
       archiveCron: 0 0 2 * * ?
@@ -126,7 +126,7 @@ data:
       flushRate: 1
       archivedFile: /opt/cloudquery/archive
       clearBkRate: 0 0 0 1 */6 ?
-
+    
     ###########################################################审计表字段############################################################
     sync:
       #数据同步的频率
@@ -195,7 +195,7 @@ data:
         #   执行审计表
         EXECUTE:
           selectSql: "SELECT * FROM public.extrat_audit_record WHERE log_create_time < now() and log_create_time > (SELECT COALESCE(max(sync_time), '2000-02-06 09:21:53.549765 +08:00') FROM sync_log where sync_type = '%s') order by log_create_time"
-          insertSql: "INSERT INTO default.ods_extrat_audit_record (id, log_type, sql_type, client_agent, client_ip, server_ip, execute_sql, error_msg, executor, execute_begin, execute_end, extrat_flag, log_create_time, transfer_time, db_edition, seconds, result_flag, execute_cost, full_scan_flag, database_name, port, affect_rows, connection_name, db_name, executor_name, approve_user, table_name, sql_parse_flag, session_id, explain, resource_id, check_permission_id, original_sql, connection_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+          insertSql: "INSERT INTO default.ods_extrat_audit_record (id, log_type, sql_type, client_agent, client_ip, server_ip, execute_sql, error_msg, executor, execute_begin, execute_end, extrat_flag, log_create_time, transfer_time, db_edition, seconds, result_flag, execute_cost, full_scan_flag, database_name, port, affect_rows, connection_name, db_name, executor_name, approve_user, table_name, sql_parse_flag, session_id, explain, resource_id, check_permission_id, original_sql, connection_id, high_risk_flag, file_path) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
           deleteSql: "ALTER TABLE default.ods_extrat_audit_record DELETE WHERE id in (%s)"
           type: "EXECUTE"
           primary: "id"
@@ -235,6 +235,8 @@ data:
             check_permission_id: "String"
             original_sql: "String"
             connection_id: "Long"
+            high_risk_flag: "Int"
+            file_path: "String"
         #   角色表
         ROLE:
           selectSql: "SELECT * FROM public.cq_role WHERE updated_at < now() and updated_at > (SELECT COALESCE(max(sync_time), '2000-02-06 09:21:53.549765 +08:00') FROM sync_log where sync_type = '%s') order by updated_at"
@@ -302,30 +304,6 @@ data:
             job_number: "String"
             phone: "String"
             post_id: "Long"
-        #   字典节点表
-        NODE:
-          selectSql: "SELECT * FROM public.data_dict_node_info WHERE updated < now() and updated > (SELECT COALESCE(max(sync_time), '2000-02-06 09:21:53.549765 +08:00') FROM sync_log where sync_type = '%s') order by updated"
-          insertSql: "INSERT INTO default.ods_data_dict_node_info (id, created, updated, child_count, connection_id, connection_type, has_child, internal_node_path, node_description, node_name, node_options, node_path, node_type, parent_id, permission_path) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
-          deleteSql: "ALTER TABLE default.ods_data_dict_node_info DELETE WHERE id in (%s)"
-          type: "NODE"
-          primary: "id"
-          time: "updated"
-          columns:
-            id: "Long"
-            created: "Date"
-            updated: "Date"
-            child_count: "Int"
-            connection_id: "Long"
-            connection_type: "String"
-            has_child: "Boolean"
-            internal_node_path: "String"
-            node_description: "String"
-            node_name: "String"
-            node_options: "String"
-            node_path: "String"
-            node_type: "String"
-            parent_id: "Long"
-            permission_path: "String"
         #   授权日志表
         AUTH:
           selectSql: "SELECT * FROM public.cq_user_authorization_log WHERE created_at < now() and created_at > (SELECT COALESCE(max(sync_time), '2000-02-06 09:21:53.549765 +08:00') FROM sync_log where sync_type = '%s') order by created_at"
@@ -348,7 +326,7 @@ data:
             user_id: "String"
             session_id: "String"
             client_ip: "String"
-
+    
         #   角色权限关联表
         ROLE_PERMISSION:
           selectSql: "SELECT * FROM public.cq_role_permission_relationship WHERE updated_at < now() and updated_at > (SELECT COALESCE(max(sync_time), '2000-02-06 09:21:53.549765 +08:00') FROM sync_log where sync_type = '%s') order by updated_at"
@@ -366,7 +344,7 @@ data:
             permission_id: "Long"
             role_id: "Long"
             model_type: "String"
-
+    
         #   部门表
         DEPT:
           selectSql: "SELECT * FROM public.cq_org WHERE updated_at < now() and updated_at > (SELECT COALESCE(max(sync_time), '2000-02-06 09:21:53.549765 +08:00') FROM sync_log where sync_type = '%s') order by updated_at"
@@ -462,7 +440,6 @@ data:
                     <ref bean="syncRoleTask"/>
                     <ref bean="syncPermissionTask"/>
                     <ref bean="syncUserTask"/>
-                    <ref bean="syncNodeTask"/>
                     <ref bean="syncAuthTask"/>
                     <ref bean="syncRolePermissionTask"/>
                     <ref bean="syncDeptTask"/>
@@ -513,7 +490,7 @@ data:
         <bean id="calculateExecuteTask" class="cn.bintools.cloudquery.analyze.service.CalculateService">
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="aIzFD0oEUa" />
+            <property name="pwd" value="" />
             <property name="tasks">
                 <list value-type="cn.bintools.cloudquery.analyze.pojo.model.CalculateTask">
                     <ref bean="executeModel"/>
@@ -530,7 +507,7 @@ data:
         <bean id="calculateOperateTask" class="cn.bintools.cloudquery.analyze.service.CalculateService">
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="aIzFD0oEUa" />
+            <property name="pwd" value="" />
             <property name="tasks">
                 <list value-type="cn.bintools.cloudquery.analyze.pojo.model.CalculateTask">
                     <ref bean="operateModel"/>
@@ -547,7 +524,7 @@ data:
         <bean id="calculateAuthTask" class="cn.bintools.cloudquery.analyze.service.CalculateService">
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="aIzFD0oEUa" />
+            <property name="pwd" value="" />
             <property name="tasks">
                 <list value-type="cn.bintools.cloudquery.analyze.pojo.model.CalculateTask">
                     <ref bean="authModel"/>
@@ -564,7 +541,7 @@ data:
         <bean id="calculateUserTask" class="cn.bintools.cloudquery.analyze.service.CalculateService">
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="aIzFD0oEUa" />
+            <property name="pwd" value="" />
             <property name="tasks">
                 <list value-type="cn.bintools.cloudquery.analyze.pojo.model.CalculateTask">
                     <ref bean="userModel"/>
@@ -581,7 +558,7 @@ data:
         <bean id="calculatePermissionTask" class="cn.bintools.cloudquery.analyze.service.CalculateService">
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="aIzFD0oEUa" />
+            <property name="pwd" value="" />
             <property name="tasks">
                 <list value-type="cn.bintools.cloudquery.analyze.pojo.model.CalculateTask">
                     <ref bean="permissionModel"/>
@@ -602,7 +579,7 @@ data:
             </property>
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="aIzFD0oEUa" />
+            <property name="pwd" value="" />
         </bean>
         <bean id="roleModel" class="cn.bintools.cloudquery.analyze.pojo.model.CalculateTask">
             <property name="type" value="ROLE" />
@@ -618,7 +595,7 @@ data:
             </property>
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="aIzFD0oEUa" />
+            <property name="pwd" value="" />
         </bean>
         <bean id="nodeModel" class="cn.bintools.cloudquery.analyze.pojo.model.CalculateTask">
             <property name="type" value="NODE" />
@@ -635,7 +612,7 @@ data:
             </property>
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="aIzFD0oEUa" />
+            <property name="pwd" value="" />
         </bean>
         <bean id="connectionModel" class="cn.bintools.cloudquery.analyze.pojo.model.CalculateTask">
             <property name="type" value="CONNECTION" />
@@ -660,7 +637,7 @@ data:
             </property>
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="aIzFD0oEUa" />
+            <property name="pwd" value="" />
         </bean>
         <bean id="rolePermissionModel" class="cn.bintools.cloudquery.analyze.pojo.model.CalculateTask">
             <property name="type" value="ROLE_PERMISSION" />
@@ -677,7 +654,7 @@ data:
             </property>
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="aIzFD0oEUa" />
+            <property name="pwd" value="" />
         </bean>
         <bean id="deptModel" class="cn.bintools.cloudquery.analyze.pojo.model.CalculateTask">
             <property name="type" value="DEPT" />
@@ -694,7 +671,7 @@ data:
             </property>
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="aIzFD0oEUa" />
+            <property name="pwd" value="" />
         </bean>
         <bean id="userRoleModel" class="cn.bintools.cloudquery.analyze.pojo.model.CalculateTask">
             <property name="type" value="USER_ROLE" />
@@ -711,7 +688,7 @@ data:
             </property>
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="aIzFD0oEUa" />
+            <property name="pwd" value="" />
         </bean>
         <bean id="authenticationModel" class="cn.bintools.cloudquery.analyze.pojo.model.CalculateTask">
             <property name="type" value="AUTHENTICATION" />
@@ -725,77 +702,77 @@ data:
             <property name="executeSql" value="${prop.mvCurrentUserAmount}" />
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="aIzFD0oEUa" />
+            <property name="pwd" value="" />
         </bean>
         <bean id="mvAuditRecordHoursTask" class="cn.bintools.cloudquery.analyze.service.CalculateService">
             <property name="tableName" value="mv_audit_record_hours" />
             <property name="executeSql" value="${prop.mvAuditRecordHours}" />
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="aIzFD0oEUa" />
+            <property name="pwd" value="" />
         </bean>
         <bean id="mvAuditRecordDaysTask" class="cn.bintools.cloudquery.analyze.service.CalculateService">
             <property name="tableName" value="mv_audit_record_days" />
             <property name="executeSql" value="${prop.mvAuditRecordDays}" />
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="aIzFD0oEUa" />
+            <property name="pwd" value="" />
         </bean>
         <bean id="mvAuditRecordMonths" class="cn.bintools.cloudquery.analyze.service.CalculateService">
             <property name="tableName" value="mv_audit_record_months" />
             <property name="executeSql" value="${prop.mvAuditRecordMonths}" />
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="aIzFD0oEUa" />
+            <property name="pwd" value="" />
         </bean>
         <bean id="mvRecordHoursTask" class="cn.bintools.cloudquery.analyze.service.CalculateService">
             <property name="tableName" value="mv_record_hours" />
             <property name="executeSql" value="${prop.mvRecordHours}" />
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="aIzFD0oEUa" />
+            <property name="pwd" value="" />
         </bean>
         <bean id="mvRecordDaysTask" class="cn.bintools.cloudquery.analyze.service.CalculateService">
             <property name="tableName" value="mv_record_days" />
             <property name="executeSql" value="${prop.mvRecordDays}" />
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="aIzFD0oEUa" />
+            <property name="pwd" value="" />
         </bean>
         <bean id="mvUserFlowAmountTask" class="cn.bintools.cloudquery.analyze.service.CalculateService">
             <property name="tableName" value="mv_user_flow_amount" />
             <property name="executeSql" value="${prop.mvUserFlowAmount}" />
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="aIzFD0oEUa" />
+            <property name="pwd" value="" />
         </bean>
         <bean id="mvUserAmountTask" class="cn.bintools.cloudquery.analyze.service.CalculateService">
             <property name="tableName" value="mv_user_amount" />
             <property name="executeSql" value="${prop.mvUserAmount}" />
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="aIzFD0oEUa" />
+            <property name="pwd" value="" />
         </bean>
         <bean id="mvUserAmountHoursTask" class="cn.bintools.cloudquery.analyze.service.CalculateService">
             <property name="tableName" value="mv_user_amount_hours" />
             <property name="executeSql" value="${prop.mvUserAmountHours}" />
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="aIzFD0oEUa" />
+            <property name="pwd" value="" />
         </bean>
         <bean id="mvUserAmountDaysTask" class="cn.bintools.cloudquery.analyze.service.CalculateService">
             <property name="tableName" value="mv_user_amount_days" />
             <property name="executeSql" value="${prop.mvUserAmountDays}" />
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="aIzFD0oEUa" />
+            <property name="pwd" value="" />
         </bean>
         <bean id="mvUserAmountMonthsTask" class="cn.bintools.cloudquery.analyze.service.CalculateService">
             <property name="tableName" value="mv_user_amount_months" />
             <property name="executeSql" value="${prop.mvUserAmountMonths}" />
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="aIzFD0oEUa" />
+            <property name="pwd" value="" />
         </bean>
 
         <bean id="mvUserAmountQuatersTask" class="cn.bintools.cloudquery.analyze.service.CalculateService">
@@ -803,7 +780,7 @@ data:
             <property name="executeSql" value="${prop.mvUserAmountQuaters}" />
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="aIzFD0oEUa" />
+            <property name="pwd" value="" />
         </bean>
 
         <bean id="mvUserAmountWeeksTask" class="cn.bintools.cloudquery.analyze.service.CalculateService">
@@ -811,7 +788,7 @@ data:
             <property name="executeSql" value="${prop.mvUserAmountWeeks}" />
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="aIzFD0oEUa" />
+            <property name="pwd" value="" />
         </bean>
 
         <bean id="mvUserAmountYearsTask" class="cn.bintools.cloudquery.analyze.service.CalculateService">
@@ -819,13 +796,13 @@ data:
             <property name="executeSql" value="${prop.mvUserAmountYears}" />
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="aIzFD0oEUa" />
+            <property name="pwd" value="" />
         </bean>
 
         <bean id="mvOrgObjectTimeAmountHoursTask" class="cn.bintools.cloudquery.analyze.service.CalculateService">
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="aIzFD0oEUa" />
+            <property name="pwd" value="" />
             <property name="tasks">
                 <list value-type="cn.bintools.cloudquery.analyze.pojo.model.CalculateTask">
                     <ref bean="ootHourModel"/>
@@ -838,11 +815,27 @@ data:
             <property name="deleteSql" value="${prop.deleteMvOrgObjectTimeAmountHours}"/>
             <property name="splitSql" value="${prop.splitMvOrgObjectTimeAmountHours}"/>
         </bean>
+        <bean id="mvOrgObjectHighRiskTimeAmountHoursTask" class="cn.bintools.cloudquery.analyze.service.CalculateService">
+            <property name="url" value="${connection.url}" />
+            <property name="user" value="${connection.user}" />
+            <property name="pwd" value="" />
+            <property name="tasks">
+                <list value-type="cn.bintools.cloudquery.analyze.pojo.model.CalculateTask">
+                    <ref bean="ootHighRiskHourModel"/>
+                </list>
+            </property>
+        </bean>
+        <bean id="ootHighRiskHourModel" class="cn.bintools.cloudquery.analyze.pojo.model.CalculateTask">
+            <property name="type" value="OOTHIGHRISKHOUR" />
+            <property name="executeSql" value="${prop.mvOrgObjectHighRiskTimeAmountHours}" />
+            <property name="deleteSql" value="${prop.deleteMvOrgObjectHighRiskTimeAmountHours}"/>
+            <property name="splitSql" value="${prop.splitMvOrgObjectHighRiskTimeAmountHours}"/>
+        </bean>
 
         <bean id="mvOrgObjectTimeAmountDaysTask" class="cn.bintools.cloudquery.analyze.service.CalculateService">
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="aIzFD0oEUa" />
+            <property name="pwd" value="" />
             <property name="tasks">
                 <list value-type="cn.bintools.cloudquery.analyze.pojo.model.CalculateTask">
                     <ref bean="ootDayModel"/>
@@ -855,11 +848,27 @@ data:
             <property name="deleteSql" value="${prop.deleteMvOrgObjectTimeAmountDays}"/>
             <property name="splitSql" value="${prop.splitMvOrgObjectTimeAmountDays}"/>
         </bean>
+        <bean id="mvOrgObjectHighRiskTimeAmountDaysTask" class="cn.bintools.cloudquery.analyze.service.CalculateService">
+            <property name="url" value="${connection.url}" />
+            <property name="user" value="${connection.user}" />
+            <property name="pwd" value="" />
+            <property name="tasks">
+                <list value-type="cn.bintools.cloudquery.analyze.pojo.model.CalculateTask">
+                    <ref bean="ootHighRiskDayModel"/>
+                </list>
+            </property>
+        </bean>
+        <bean id="ootHighRiskDayModel" class="cn.bintools.cloudquery.analyze.pojo.model.CalculateTask">
+            <property name="type" value="OOTHIGHRISKDAY" />
+            <property name="executeSql" value="${prop.mvOrgObjectHighRiskTimeAmountDays}" />
+            <property name="deleteSql" value="${prop.deleteMvOrgObjectHighRiskTimeAmountDays}"/>
+            <property name="splitSql" value="${prop.splitMvOrgObjectHighRiskTimeAmountDays}"/>
+        </bean>
 
         <bean id="mvOrgObjectTimeAmountWeeksTask" class="cn.bintools.cloudquery.analyze.service.CalculateService">
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="aIzFD0oEUa" />
+            <property name="pwd" value="" />
             <property name="tasks">
                 <list value-type="cn.bintools.cloudquery.analyze.pojo.model.CalculateTask">
                     <ref bean="ootWeekModel"/>
@@ -872,11 +881,27 @@ data:
             <property name="deleteSql" value="${prop.deleteMvOrgObjectTimeAmountWeeks}"/>
             <property name="splitSql" value="${prop.splitMvOrgObjectTimeAmountWeeks}"/>
         </bean>
+        <bean id="mvOrgObjectHighRiskTimeAmountWeeksTask" class="cn.bintools.cloudquery.analyze.service.CalculateService">
+            <property name="url" value="${connection.url}" />
+            <property name="user" value="${connection.user}" />
+            <property name="pwd" value="" />
+            <property name="tasks">
+                <list value-type="cn.bintools.cloudquery.analyze.pojo.model.CalculateTask">
+                    <ref bean="ootHighRiskWeekModel"/>
+                </list>
+            </property>
+        </bean>
+        <bean id="ootHighRiskWeekModel" class="cn.bintools.cloudquery.analyze.pojo.model.CalculateTask">
+            <property name="type" value="OOTHIGHRISKWEEK" />
+            <property name="executeSql" value="${prop.mvOrgObjectHighRiskTimeAmountWeeks}" />
+            <property name="deleteSql" value="${prop.deleteMvOrgObjectHighRiskTimeAmountWeeks}"/>
+            <property name="splitSql" value="${prop.splitMvOrgObjectHighRiskTimeAmountWeeks}"/>
+        </bean>
 
         <bean id="mvOrgObjectTimeAmountMonthsTask" class="cn.bintools.cloudquery.analyze.service.CalculateService">
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="aIzFD0oEUa" />
+            <property name="pwd" value="" />
             <property name="tasks">
                 <list value-type="cn.bintools.cloudquery.analyze.pojo.model.CalculateTask">
                     <ref bean="ootMonthModel"/>
@@ -889,12 +914,28 @@ data:
             <property name="deleteSql" value="${prop.deleteMvOrgObjectTimeAmountMonths}"/>
             <property name="splitSql" value="${prop.splitMvOrgObjectTimeAmountMonths}"/>
         </bean>
+        <bean id="mvOrgObjectHighRiskTimeAmountMonthsTask" class="cn.bintools.cloudquery.analyze.service.CalculateService">
+            <property name="url" value="${connection.url}" />
+            <property name="user" value="${connection.user}" />
+            <property name="pwd" value="" />
+            <property name="tasks">
+                <list value-type="cn.bintools.cloudquery.analyze.pojo.model.CalculateTask">
+                    <ref bean="ootHighRiskMonthModel"/>
+                </list>
+            </property>
+        </bean>
+        <bean id="ootHighRiskMonthModel" class="cn.bintools.cloudquery.analyze.pojo.model.CalculateTask">
+            <property name="type" value="OOTHIGHRISKMONTH" />
+            <property name="executeSql" value="${prop.mvOrgObjectHighRiskTimeAmountMonths}" />
+            <property name="deleteSql" value="${prop.deleteMvOrgObjectHighRiskTimeAmountMonths}"/>
+            <property name="splitSql" value="${prop.splitMvOrgObjectHighRiskTimeAmountMonths}"/>
+        </bean>
 
 
         <bean id="mvOrgObjectTimeAmountQuartersTask" class="cn.bintools.cloudquery.analyze.service.CalculateService">
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="aIzFD0oEUa" />
+            <property name="pwd" value="" />
             <property name="tasks">
                 <list value-type="cn.bintools.cloudquery.analyze.pojo.model.CalculateTask">
                     <ref bean="ootQuarterModel"/>
@@ -907,11 +948,27 @@ data:
             <property name="deleteSql" value="${prop.deleteMvOrgObjectTimeAmountQuarters}"/>
             <property name="splitSql" value="${prop.splitMvOrgObjectTimeAmountQuarters}"/>
         </bean>
+        <bean id="mvOrgObjectHighRiskTimeAmountQuartersTask" class="cn.bintools.cloudquery.analyze.service.CalculateService">
+            <property name="url" value="${connection.url}" />
+            <property name="user" value="${connection.user}" />
+            <property name="pwd" value="" />
+            <property name="tasks">
+                <list value-type="cn.bintools.cloudquery.analyze.pojo.model.CalculateTask">
+                    <ref bean="ootHighRiskQuarterModel"/>
+                </list>
+            </property>
+        </bean>
+        <bean id="ootHighRiskQuarterModel" class="cn.bintools.cloudquery.analyze.pojo.model.CalculateTask">
+            <property name="type" value="OOTHIGHRISKQUARTER" />
+            <property name="executeSql" value="${prop.mvOrgObjectHighRiskTimeAmountQuarters}" />
+            <property name="deleteSql" value="${prop.deleteMvOrgObjectHighRiskTimeAmountQuarters}"/>
+            <property name="splitSql" value="${prop.splitMvOrgObjectHighRiskTimeAmountQuarters}"/>
+        </bean>
 
         <bean id="mvOrgObjectTimeAmountYearsTask" class="cn.bintools.cloudquery.analyze.service.CalculateService">
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="aIzFD0oEUa" />
+            <property name="pwd" value="" />
             <property name="tasks">
                 <list value-type="cn.bintools.cloudquery.analyze.pojo.model.CalculateTask">
                     <ref bean="ootYearModel"/>
@@ -924,11 +981,27 @@ data:
             <property name="deleteSql" value="${prop.deleteMvOrgObjectTimeAmountYears}"/>
             <property name="splitSql" value="${prop.splitMvOrgObjectTimeAmountYears}"/>
         </bean>
+        <bean id="mvOrgObjectHighRiskTimeAmountYearsTask" class="cn.bintools.cloudquery.analyze.service.CalculateService">
+            <property name="url" value="${connection.url}" />
+            <property name="user" value="${connection.user}" />
+            <property name="pwd" value="" />
+            <property name="tasks">
+                <list value-type="cn.bintools.cloudquery.analyze.pojo.model.CalculateTask">
+                    <ref bean="ootHighRiskYearModel"/>
+                </list>
+            </property>
+        </bean>
+        <bean id="ootHighRiskYearModel" class="cn.bintools.cloudquery.analyze.pojo.model.CalculateTask">
+            <property name="type" value="OOTHIGHRISKYEAR" />
+            <property name="executeSql" value="${prop.mvOrgObjectHighRiskTimeAmountYears}" />
+            <property name="deleteSql" value="${prop.deleteMvOrgObjectHighRiskTimeAmountYears}"/>
+            <property name="splitSql" value="${prop.splitMvOrgObjectHighRiskTimeAmountYears}"/>
+        </bean>
 
         <bean id="mvOrgObjectTimeAmountTask" class="cn.bintools.cloudquery.analyze.service.CalculateService">
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="aIzFD0oEUa" />
+            <property name="pwd" value="" />
             <property name="tasks">
                 <list value-type="cn.bintools.cloudquery.analyze.pojo.model.CalculateTask">
                     <ref bean="ootModel"/>
@@ -941,13 +1014,29 @@ data:
             <property name="deleteSql" value="${prop.deleteMvOrgObjectTimeAmount}"/>
             <property name="splitSql" value="${prop.splitMvOrgObjectTimeAmount}"/>
         </bean>
+        <bean id="mvOrgObjectHighRiskTimeAmountTask" class="cn.bintools.cloudquery.analyze.service.CalculateService">
+            <property name="url" value="${connection.url}" />
+            <property name="user" value="${connection.user}" />
+            <property name="pwd" value="" />
+            <property name="tasks">
+                <list value-type="cn.bintools.cloudquery.analyze.pojo.model.CalculateTask">
+                    <ref bean="ootHighRiskModel"/>
+                </list>
+            </property>
+        </bean>
+        <bean id="ootHighRiskModel" class="cn.bintools.cloudquery.analyze.pojo.model.CalculateTask">
+            <property name="type" value="OOTHIGHRISK" />
+            <property name="executeSql" value="${prop.mvOrgObjectHighRiskTimeAmount}" />
+            <property name="deleteSql" value="${prop.deleteMvOrgObjectHighRiskTimeAmount}"/>
+            <property name="splitSql" value="${prop.splitMvOrgObjectHighRiskTimeAmount}"/>
+        </bean>
 
         <bean id="dwdDimTimeHourTask" class="cn.bintools.cloudquery.analyze.service.CalculateService">
             <property name="tableName" value="dwd_dim_time_hour" />
             <property name="executeSql" value="${prop.dwdDimTimeHour}" />
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="aIzFD0oEUa" />
+            <property name="pwd" value="" />
         </bean>
 
         <bean id="dwdDimTimeDayTask" class="cn.bintools.cloudquery.analyze.service.CalculateService">
@@ -955,7 +1044,7 @@ data:
             <property name="executeSql" value="${prop.dwdDimTimeDay}" />
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="aIzFD0oEUa" />
+            <property name="pwd" value="" />
         </bean>
 
         <bean id="dwdDimTimeWeekTask" class="cn.bintools.cloudquery.analyze.service.CalculateService">
@@ -963,7 +1052,7 @@ data:
             <property name="executeSql" value="${prop.dwdDimTimeWeek}" />
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="aIzFD0oEUa" />
+            <property name="pwd" value="" />
         </bean>
 
         <bean id="dwdDimTimeMonthTask" class="cn.bintools.cloudquery.analyze.service.CalculateService">
@@ -971,7 +1060,7 @@ data:
             <property name="executeSql" value="${prop.dwdDimTimeMonth}" />
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="aIzFD0oEUa" />
+            <property name="pwd" value="" />
         </bean>
 
 
@@ -980,7 +1069,7 @@ data:
             <property name="executeSql" value="${prop.dwdDimTimeQuarter}" />
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="aIzFD0oEUa" />
+            <property name="pwd" value="" />
         </bean>
 
 
@@ -989,7 +1078,7 @@ data:
             <property name="executeSql" value="${prop.dwdDimTimeYear}" />
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="aIzFD0oEUa" />
+            <property name="pwd" value="" />
         </bean>
 
         <bean id="mvDbTypeAmountTask" class="cn.bintools.cloudquery.analyze.service.CalculateService">
@@ -997,126 +1086,126 @@ data:
             <property name="executeSql" value="${prop.mvDbTypeAmount}" />
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="aIzFD0oEUa" />
+            <property name="pwd" value="" />
         </bean>
         <bean id="mvSqlExecuteAmountTask" class="cn.bintools.cloudquery.analyze.service.CalculateService">
             <property name="tableName" value="mv_sql_execute_amount" />
             <property name="executeSql" value="${prop.mvSqlExecuteAmount}" />
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="aIzFD0oEUa" />
+            <property name="pwd" value="" />
         </bean>
         <bean id="mvAllAuditAmountTask" class="cn.bintools.cloudquery.analyze.service.CalculateService">
             <property name="tableName" value="mv_all_audit_amount" />
             <property name="executeSql" value="${prop.mvAllAuditAmount}" />
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="aIzFD0oEUa" />
+            <property name="pwd" value="" />
         </bean>
         <bean id="mvSqlExecuteErrorAmountTask" class="cn.bintools.cloudquery.analyze.service.CalculateService">
             <property name="tableName" value="mv_sql_execute_error_amount" />
             <property name="executeSql" value="${prop.mvSqlExecuteErrorAmount}" />
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="aIzFD0oEUa" />
+            <property name="pwd" value="" />
         </bean>
         <bean id="mvTodaySqlExecuteAmountTask" class="cn.bintools.cloudquery.analyze.service.CalculateService">
             <property name="tableName" value="mv_today_sql_execute_amount" />
             <property name="executeSql" value="${prop.mvTodaySqlExecuteAmount}" />
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="aIzFD0oEUa" />
+            <property name="pwd" value="" />
         </bean>
         <bean id="mvMonthSqlExecuteAmountTask" class="cn.bintools.cloudquery.analyze.service.CalculateService">
             <property name="tableName" value="mv_month_sql_execute_amount" />
             <property name="executeSql" value="${prop.mvMonthSqlExecuteAmount}" />
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="aIzFD0oEUa" />
+            <property name="pwd" value="" />
         </bean>
         <bean id="mvTodaySqlOperateAmountTask" class="cn.bintools.cloudquery.analyze.service.CalculateService">
             <property name="tableName" value="mv_today_sql_operate_amount" />
             <property name="executeSql" value="${prop.mvTodaySqlOperateAmount}" />
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="aIzFD0oEUa" />
+            <property name="pwd" value="" />
         </bean>
         <bean id="mvMonthSqlOperateAmountTask" class="cn.bintools.cloudquery.analyze.service.CalculateService">
             <property name="tableName" value="mv_month_sql_operate_amount" />
             <property name="executeSql" value="${prop.mvMonthSqlOperateAmount}" />
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="aIzFD0oEUa" />
+            <property name="pwd" value="" />
         </bean>
         <bean id="mvTodaySqlExecuteErrorAmountTask" class="cn.bintools.cloudquery.analyze.service.CalculateService">
             <property name="tableName" value="mv_today_sql_execute_error_amount" />
             <property name="executeSql" value="${prop.mvTodaySqlExecuteErrorAmount}" />
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="aIzFD0oEUa" />
+            <property name="pwd" value="" />
         </bean>
         <bean id="mvMonthSqlExecuteErrorAmountTask" class="cn.bintools.cloudquery.analyze.service.CalculateService">
             <property name="tableName" value="mv_month_sql_execute_error_amount" />
             <property name="executeSql" value="${prop.mvMonthSqlExecuteErrorAmount}" />
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="aIzFD0oEUa" />
+            <property name="pwd" value="" />
         </bean>
         <bean id="mvLastMonthOperateAmountTask" class="cn.bintools.cloudquery.analyze.service.CalculateService">
             <property name="tableName" value="mv_last_month_operate_amount" />
             <property name="executeSql" value="${prop.mvLastMonthOperateAmount}" />
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="aIzFD0oEUa" />
+            <property name="pwd" value="" />
         </bean>
         <bean id="mvLastMonthSqlExecuteAmountTask" class="cn.bintools.cloudquery.analyze.service.CalculateService">
             <property name="tableName" value="mv_last_month_sql_execute_amount" />
             <property name="executeSql" value="${prop.mvLastMonthSqlExecuteAmount}" />
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="aIzFD0oEUa" />
+            <property name="pwd" value="" />
         </bean>
         <bean id="mvLastDayOperateAmountTask" class="cn.bintools.cloudquery.analyze.service.CalculateService">
             <property name="tableName" value="mv_last_day_operate_amount" />
             <property name="executeSql" value="${prop.mvLastDayOperateAmount}" />
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="aIzFD0oEUa" />
+            <property name="pwd" value="" />
         </bean>
         <bean id="mvLastDaySqlExecuteAmountTask" class="cn.bintools.cloudquery.analyze.service.CalculateService">
             <property name="tableName" value="mv_last_day_sql_execute_amount" />
             <property name="executeSql" value="${prop.mvLastDaySqlExecuteAmount}" />
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="aIzFD0oEUa" />
+            <property name="pwd" value="" />
         </bean>
         <bean id="mvMonthHighRiskSqlAmountTask" class="cn.bintools.cloudquery.analyze.service.CalculateService">
             <property name="tableName" value="mv_month_high_risk_sql_amount" />
             <property name="executeSql" value="${prop.mvMonthHighRiskSqlAmount}" />
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="aIzFD0oEUa" />
+            <property name="pwd" value="" />
         </bean>
         <bean id="mvTodayHighRiskSqlAmountTask" class="cn.bintools.cloudquery.analyze.service.CalculateService">
             <property name="tableName" value="mv_today_high_risk_sql_amount" />
             <property name="executeSql" value="${prop.mvTodayHighRiskSqlAmount}" />
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="aIzFD0oEUa" />
+            <property name="pwd" value="" />
         </bean>
         <bean id="mvMonthOverPermAmountTask" class="cn.bintools.cloudquery.analyze.service.CalculateService">
             <property name="tableName" value="mv_month_over_perm_amount" />
             <property name="executeSql" value="${prop.mvMonthOverPermAmount}" />
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="aIzFD0oEUa" />
+            <property name="pwd" value="" />
         </bean>
         <bean id="mvDayOverPermAmountTask" class="cn.bintools.cloudquery.analyze.service.CalculateService">
             <property name="tableName" value="mv_today_over_perm_amount" />
             <property name="executeSql" value="${prop.mvDayOverPermAmount}" />
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="aIzFD0oEUa" />
+            <property name="pwd" value="" />
         </bean>
 
         <bean id="mvDbExecuteAvgHoursTask" class="cn.bintools.cloudquery.analyze.service.CalculateService">
@@ -1124,28 +1213,28 @@ data:
             <property name="executeSql" value="${prop.mvDbExecuteAvgHours}" />
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="aIzFD0oEUa" />
+            <property name="pwd" value="" />
         </bean>
         <bean id="mvDbExecuteAvgDaysTask" class="cn.bintools.cloudquery.analyze.service.CalculateService">
             <property name="tableName" value="mv_db_execute_avg_days" />
             <property name="executeSql" value="${prop.mvDbExecuteAvgDays}" />
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="aIzFD0oEUa" />
+            <property name="pwd" value="" />
         </bean>
         <bean id="mvDbExecuteAvgMonthsTask" class="cn.bintools.cloudquery.analyze.service.CalculateService">
             <property name="tableName" value="mv_db_execute_avg_months" />
             <property name="executeSql" value="${prop.mvDbExecuteAvgMonths}" />
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="aIzFD0oEUa" />
+            <property name="pwd" value="" />
         </bean>
 
         <!--    生成dws层大宽表-->
         <bean id="dwsExtrat" class="cn.bintools.cloudquery.analyze.service.CalculateService">
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="aIzFD0oEUa" />
+            <property name="pwd" value="" />
             <property name="tasks">
                 <list value-type="cn.bintools.cloudquery.analyze.pojo.model.CalculateTask">
                     <ref bean="dwdExtratModel"/>
@@ -1163,7 +1252,7 @@ data:
         <bean id="dwsOperate" class="cn.bintools.cloudquery.analyze.service.CalculateService">
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="aIzFD0oEUa" />
+            <property name="pwd" value="" />
             <property name="tasks">
                 <list value-type="cn.bintools.cloudquery.analyze.pojo.model.CalculateTask">
                     <ref bean="dwdOperateModel"/>
@@ -1180,7 +1269,7 @@ data:
         <bean id="dwsAuth" class="cn.bintools.cloudquery.analyze.service.CalculateService">
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="aIzFD0oEUa" />
+            <property name="pwd" value="" />
             <property name="tasks">
                 <list value-type="cn.bintools.cloudquery.analyze.pojo.model.CalculateTask">
                     <ref bean="dwdAuthModel"/>
@@ -1197,7 +1286,7 @@ data:
         <bean id="calculateOrgRelation"  class="cn.bintools.cloudquery.analyze.service.CalculateService">
             <property name="url" value="${connection.url}" />
             <property name="user" value="${connection.user}" />
-            <property name="pwd" value="aIzFD0oEUa" />
+            <property name="pwd" value="" />
         </bean>
 
 
@@ -1237,6 +1326,14 @@ data:
             <task:scheduled ref="mvOrgObjectTimeAmountDaysTask" method="calculateSql4DimTime" cron="27 */4 * * * ?"/>
             <task:scheduled ref="mvOrgObjectTimeAmountHoursTask" method="calculateSql4DimTime" cron="32 */4 * * * ?"/>
 
+            <task:scheduled ref="mvOrgObjectHighRiskTimeAmountTask" method="calculateSql4DimTime" cron="2 */4 * * * ?"/>
+            <task:scheduled ref="mvOrgObjectHighRiskTimeAmountYearsTask" method="calculateSql4DimTime" cron="45 */5 * * * ?"/>
+            <task:scheduled ref="mvOrgObjectHighRiskTimeAmountQuartersTask" method="calculateSql4DimTime" cron="58 */5 * * * ?"/>
+            <task:scheduled ref="mvOrgObjectHighRiskTimeAmountMonthsTask" method="calculateSql4DimTime" cron="17 */5 * * * ?"/>
+            <task:scheduled ref="mvOrgObjectHighRiskTimeAmountWeeksTask" method="calculateSql4DimTime" cron="22 */5 * * * ?"/>
+            <task:scheduled ref="mvOrgObjectHighRiskTimeAmountDaysTask" method="calculateSql4DimTime" cron="27 */4 * * * ?"/>
+            <task:scheduled ref="mvOrgObjectHighRiskTimeAmountHoursTask" method="calculateSql4DimTime" cron="32 */4 * * * ?"/>
+
             <task:scheduled ref="dwdDimTimeHourTask" method="flashMv" cron="0 0 0 1 * ?" />
             <task:scheduled ref="dwdDimTimeDayTask" method="flashMv" cron="0 0 0 1 * ?" />
             <task:scheduled ref="dwdDimTimeWeekTask" method="flashMv" cron="0 0 0 1 * ?" />
@@ -1273,14 +1370,14 @@ data:
     </beans>
   sql.properties: |
     connection.url=jdbc:clickhouse://cloudquery-clickhouse:8123/default?rewriteBatchedStatements=true&use_server_time_zone=Asia/Shanghai&use_time_zone=Asia/Shanghai
-    connection.user=admin
-    connection.password=aIzFD0oEUa
+    connection.user=default
+    connection.password=
 
 
-    prop.insertExtratSql=insert into default.dwd_fact_audit_record(id, created_time, begin_time, end_time, user_id, user_name, client_ip, target_type, business_type, operate_type, entry_point, detail, result_flag, error_msg, db_type, server_ip, port, client_agent, db_edition, db_name, table_name, affect_rows, execute_cost, session_id, explain, operate_target, sql_parse_flag, extrat_flag, check_permission_id, original_sql, connection_id) select generateUUIDv4() as id, log_create_time  as created_time, execute_begin    as begin_time, execute_end      as end_time, executor         as user_id, executor_name    as user_name, client_ip, 'CQ_EXTRAT'      as target_type, 'EXTRAT_DB'      as business_type, sql_type         as operate_type, connection_name  as entry_point, execute_sql      as detail, result_flag, error_msg, log_type         as db_type, server_ip, port, client_agent, db_edition, db_name, table_name, affect_rows, execute_cost, session_id, explain, resource_id, sql_parse_flag, extrat_flag, check_permission_id, original_sql, connection_id from default.ods_extrat_audit_record where log_create_time < ? and log_create_time >= (select max(last_time) from default.calculate_time where type = 'EXECUTE');
-    prop.deleteExtratSql=ALTER TABLE default.dwd_fact_audit_record DELETE where created_time < ? and created_time >= (select max(last_time) from default.calculate_time where type = 'EXECUTE');
+    prop.insertExtratSql=insert into default.dwd_fact_audit_record(id, created_time, begin_time, end_time, user_id, user_name, client_ip, target_type, business_type, operate_type, entry_point, detail, result_flag, error_msg, db_type, server_ip, port, client_agent, db_edition, db_name, table_name, affect_rows, execute_cost, session_id, explain, operate_target, sql_parse_flag, extrat_flag, check_permission_id, original_sql, connection_id, high_risk_flag, file_path) select generateUUIDv4() as id, log_create_time  as created_time, execute_begin    as begin_time, execute_end      as end_time, executor         as user_id, executor_name    as user_name, client_ip, 'CQ_EXTRAT'      as target_type, 'EXTRAT_DB'      as business_type, sql_type         as operate_type, connection_name  as entry_point, execute_sql      as detail, result_flag, error_msg, log_type         as db_type, server_ip, port, client_agent, db_edition, db_name, table_name, affect_rows, execute_cost, session_id, explain, resource_id, sql_parse_flag, extrat_flag, check_permission_id, original_sql, connection_id, high_risk_flag, file_path from default.ods_extrat_audit_record where log_create_time < ? and log_create_time >= (select max(last_time) from default.calculate_time where type = 'EXECUTE');
+    prop.deleteExtratSql=ALTER TABLE default.dwd_fact_audit_record DELETE where created_time < ? and created_time >= (select max(last_time) from default.calculate_time where type = 'EXECUTE') and target_type = 'CQ_EXTRAT';
     prop.insertOperateSql=insert into default.dwd_fact_audit_record(id, created_time, begin_time, end_time, user_id, user_name, client_ip, target_type, business_type, operate_type, entry_point, operate_target, detail, result_flag, error_msg, session_id) select generateUUIDv4() as id, end_time as created_time, begin_time, end_time, user_id, user_name, client_ip, 'CQ_SYSTEM' as target_type, business_type, operate_type, operate_entry_point as entry_point, operate_target, detail, result_flag, if(result_flag, ' ',detail) as error_msg, session_id from default.ods_audit_operate_log where end_time < ? and end_time >= (select max(last_time) from default.calculate_time where type = 'OPERATE');
-    prop.deleteOperateSql=ALTER TABLE default.dwd_fact_audit_record DELETE where end_time < ? and end_time >= (select max(last_time) from default.calculate_time where type = 'OPERATE');
+    prop.deleteOperateSql=ALTER TABLE default.dwd_fact_audit_record DELETE where end_time < ? and end_time >= (select max(last_time) from default.calculate_time where type = 'OPERATE') and target_type = 'CQ_SYSTEM';
     prop.insertAuthSql= insert into default.dwd_fact_authorize_record select generateUUIDv4()        as id, t2.created_at           as created_time, t2.user_id              as auth_user_id, t2.affect_user_id       as authed_user_id, t2.operation_type       as auth_type, t2.operation_type       as auth_operate, t2.affect_role_id       as authed_role_id, t2.affect_permission_id as authed_permission_id, t1.object               as authed_resource_id, t1.operation            as authed_operation, ''                      as detail, t2.comment              as comment, t2.session_id           as session_id, t2.affect_flow_id       as affect_flow_id, t2.client_ip from (select a.created_at                                                             as created_at, a.user_id                                                                as user_id, if(a.affect_user_id is not null, a.affect_user_id, ur.user_id)           as affect_user_id, a.operation_type                                                         as operation_type, a.affect_role_id                                                         as affect_role_id, if(a.affect_permission_id != 0, a.affect_permission_id, r.permission_id) as affect_permission_id, a.comment                                                                as comment, a.session_id                                                             as session_id, if(a.affect_flow_id = 0, null, a.affect_user_id)                         as affect_flow_id, a.client_ip                                                              as client_ip from ods_auth_operate_log a left join dwd_dim_role_permission_relationship r on a.affect_role_id = r.role_id and r.is_deleted = false and (a.operation_type = 'ASSIGN_USER_TO_ROLE' or a.operation_type = 'DEASSIGN_USER_TO_ROLE') left join dwd_dim_user_role_relationship ur on a.affect_role_id = ur.role_id and ur.is_deleted = false and (a.operation_type = 'GRANT_PERMISSION_TO_ROLE' or a.operation_type = 'REVOKE_PERMISSION_TO_ROLE') where a.created_at < ? and a.created_at >= (select max(last_time) from default.calculate_time where type = 'AUTH') ) t2 left join dwd_dim_permission t1 on t1.id = t2.affect_permission_id;
     prop.deleteAuthSql=ALTER TABLE default.dwd_fact_authorize_record DELETE where create_time < ? and create_time >= (select max(last_time) from default.calculate_time where type = 'AUTH');
     prop.insertAuthenticationSql=insert into default.dwd_fact_authentication_record select * from ods_cq_user_authentication_log where created_at < ? and created_at >= (select max(last_time) from default.calculate_time where type = 'AUTHENTICATION');
@@ -1331,10 +1428,10 @@ data:
     prop.mvLastDayOperateAmount=insert into mv_last_day_operate_amount SELECT count(*) AS amount FROM dws_audit f where target_type = 'CQ_SYSTEM' and f.created_time > date_trunc('day', now() - INTERVAL 1 day) and f.created_time < date_trunc('day', now());
     prop.mvLastMonthSqlExecuteAmount=insert into mv_last_month_sql_execute_amount SELECT count(*) AS amount FROM dws_audit f where target_type = 'CQ_EXTRAT' and f.created_time > date_trunc('month', now() - INTERVAL 1 month) and f.created_time < date_trunc('month', now());
     prop.mvLastMonthOperateAmount=insert into mv_last_month_operate_amount SELECT count(*) AS amount FROM dws_audit f where target_type = 'CQ_SYSTEM' and f.created_time > date_trunc('month', now() - INTERVAL 1 month) and f.created_time < date_trunc('month', now());
-    prop.mvMonthHighRiskSqlAmount=insert into mv_month_high_risk_sql_amount select count(*) from dws_audit where target_type = 'CQ_EXTRAT' and (operate_type like '%DROP%' or operate_type like '%DELETE%' or operate_type like '%GRANT%') and created_time > date_trunc('month', now());
-    prop.mvTodayHighRiskSqlAmount=insert into mv_today_high_risk_sql_amount select count(*) from dws_audit where target_type = 'CQ_EXTRAT' and (operate_type like '%DROP%' or operate_type like '%DELETE%' or operate_type like '%GRANT%') and created_time > date_trunc('day', now())
-    prop.mvMonthOverPermAmount=insert into mv_month_over_perm_amount select count(*) from dws_audit where (error_msg like '%没有操作权限%' or error_msg like '%请提权处理%') and created_time > date_trunc('month', now());
-    prop.mvDayOverPermAmount=insert into mv_today_over_perm_amount select count(*) from dws_audit where (error_msg like '%没有操作权限%' or error_msg like '%请提权处理%') and created_time > date_trunc('day', now());
+    prop.mvMonthHighRiskSqlAmount=insert into mv_month_high_risk_sql_amount select count(*) from dws_audit where target_type = 'CQ_EXTRAT' and high_risk_flag > 0 and created_time > date_trunc('month', now());
+    prop.mvTodayHighRiskSqlAmount=insert into mv_today_high_risk_sql_amount select count(*) from dws_audit where target_type = 'CQ_EXTRAT' and high_risk_flag > 0 and created_time > date_trunc('day', now());
+    prop.mvMonthOverPermAmount=insert into mv_month_over_perm_amount select count(*) from dws_audit where (error_msg like '%没有操作权限%' or dws_audit.extrat_flag = 1) and created_time > date_trunc('month', now());
+    prop.mvDayOverPermAmount=insert into mv_today_over_perm_amount select count(*) from dws_audit where (error_msg like '%没有操作权限%' or dws_audit.extrat_flag = 1) and created_time > date_trunc('day', now());
 
     prop.mvRecordHours=insert into default.mv_record_hours SELECT c.years, c.months, c.days, c.hours, sum(1) AS amount FROM (SELECT date_trunc('year', t1.created_time)  as years, date_trunc('month', t1.created_time) as months, date_trunc('day', t1.created_time)   as days, date_trunc('hour', t1.created_time)  as hours, t1.db_type FROM dws_audit t1 WHERE date_trunc('hour', t1.begin_time) < (date_trunc('day', now()) + interval 1 day)) c GROUP BY c.years, c.months, c.days, c.hours;
     prop.mvRecordDays=insert into default.mv_record_days SELECT c.years, c.months, c.days, sum(c.amount) AS amount FROM mv_record_hours c GROUP BY c.years, c.months, c.days;
@@ -1345,9 +1442,9 @@ data:
     prop.mvDbExecuteAvgDays=insert into default.mv_db_execute_avg_days SELECT c.years, c.months, c.days, sum(c.execute_cost) AS execute_cost, sum(c.execute_amount) AS execute_amount, round(sum(c.execute_cost) / sum(c.execute_amount)) AS execute_avg, c.connection_name, c.db_name FROM mv_db_execute_avg_hours c GROUP BY c.years, c.months, c.days, c.connection_name, c.db_name;
     prop.mvDbExecuteAvgMonths=insert into default.mv_db_execute_avg_months SELECT c.years, c.months, sum(c.execute_cost) AS execute_cost, sum(c.execute_amount) AS execute_amount, round(sum(c.execute_cost) / sum(c.execute_amount)) AS execute_avg, c.connection_name, c.db_name FROM mv_db_execute_avg_days c GROUP BY c.years, c.months, c.connection_name, c.db_name;
 
-    prop.dwsExtrat=insert into default.dws_audit select generateUUIDv4() as     id, far.created_time        created_time, far.begin_time          begin_time, far.end_time            end_time, far.user_id             user_id, far.user_name           user_name, far.client_ip           client_ip, far.target_type         target_type, far.business_type       business_type, far.operate_type        operate_type, far.entry_point         entry_point, far.operate_target      operate_target, far.detail              detail, far.result_flag         result_flag, far.error_msg           error_msg, far.connection_id       connection_id, far.db_type             db_type, far.server_ip           server_ip, far.port                port, far.client_agent        client_agent, far.db_edition          db_edition, far.db_name             db_name, far.table_name          table_name, ''               as     node_path, far.affect_rows         affect_rows, far.execute_cost        execute_cost, far.session_id          session_id, far.explain             explain, far.sql_parse_flag      sql_parse_flag, extrat_flag, far.check_permission_id check_permission_id, u.name                  dept_name, far.original_sql        original_sql, u.dept_id               dept_id from (select * from dwd_fact_audit_record f where f.created_time < ? and f.created_time >= (select max(last_time) from default.calculate_time where type = 'DWS_EXECUTE') and f.target_type = 'CQ_EXTRAT') far left join (select user.user_id, o.name as name, o.id as dept_id from dwd_dim_user user inner join dwd_dim_org o on user.department_id = o.id and user.is_deleted = false) u on u.user_id = far.user_id;
+    prop.dwsExtrat=insert into default.dws_audit select generateUUIDv4() as     id, far.created_time        created_time, far.begin_time          begin_time, far.end_time            end_time, far.user_id             user_id, far.user_name           user_name, far.client_ip           client_ip, far.target_type         target_type, far.business_type       business_type, far.operate_type        operate_type, far.entry_point         entry_point, far.operate_target      operate_target, far.detail              detail, far.result_flag         result_flag, far.error_msg           error_msg, far.connection_id       connection_id, far.db_type             db_type, far.server_ip           server_ip, far.port                port, far.client_agent        client_agent, far.db_edition          db_edition, far.db_name             db_name, far.table_name          table_name, ''               as     node_path, far.affect_rows         affect_rows, far.execute_cost        execute_cost, far.session_id          session_id, far.explain             explain, far.sql_parse_flag      sql_parse_flag, extrat_flag, far.check_permission_id check_permission_id, u.name                  dept_name, far.original_sql        original_sql, u.dept_id               dept_id, far.high_risk_flag      high_risk_flag, far.file_path           file_path from (select * from dwd_fact_audit_record f where f.created_time < ? and f.created_time >= (select max(last_time) from default.calculate_time where type = 'DWS_EXECUTE') and f.target_type = 'CQ_EXTRAT') far left join (select user.user_id, o.name as name, o.id as dept_id from dwd_dim_user user inner join dwd_dim_org o on user.department_id = o.id and user.is_deleted = false) u on u.user_id = far.user_id;
     prop.deleteDwsExtrat=ALTER TABLE default.dws_audit DELETE where created_time < ? and created_time >= (select max(last_time) from default.calculate_time where type = 'DWS_EXECUTE') and target_type = 'CQ_EXTRAT'
-    prop.dwsOperate=insert into default.dws_audit select generateUUIDv4() as     id, far.created_time        created_time, far.begin_time          begin_time, far.end_time            end_time, far.user_id             user_id, far.user_name           user_name, far.client_ip           client_ip, far.target_type         target_type, far.business_type       business_type, far.operate_type        operate_type, far.entry_point         entry_point, far.operate_target      operate_target, far.detail              detail, far.result_flag         result_flag, far.error_msg           error_msg, far.connection_id       connection_id, far.db_type             db_type, far.server_ip           server_ip, far.port                port, far.client_agent        client_agent, far.db_edition          db_edition, far.db_name             db_name, far.table_name          table_name, ''               as     node_path, far.affect_rows         affect_rows, far.execute_cost        execute_cost, far.session_id          session_id, far.explain             explain, far.sql_parse_flag      sql_parse_flag, extrat_flag, far.check_permission_id check_permission_id, u.name                  dept_name, far.original_sql        original_sql, u.dept_id               dept_id from (select * from dwd_fact_audit_record f where f.created_time < ? and f.created_time >= (select max(last_time) from default.calculate_time where type = 'DWS_OPERATE') and f.target_type = 'CQ_SYSTEM') far left join (select user.user_id, o.name as name, o.id as dept_id from dwd_dim_user user inner join dwd_dim_org o on user.department_id = o.id and user.is_deleted = false) u on u.user_id = far.user_id;
+    prop.dwsOperate=insert into default.dws_audit select generateUUIDv4() as     id, far.created_time        created_time, far.begin_time          begin_time, far.end_time            end_time, far.user_id             user_id, far.user_name           user_name, far.client_ip           client_ip, far.target_type         target_type, far.business_type       business_type, far.operate_type        operate_type, far.entry_point         entry_point, far.operate_target      operate_target, far.detail              detail, far.result_flag         result_flag, far.error_msg           error_msg, far.connection_id       connection_id, far.db_type             db_type, far.server_ip           server_ip, far.port                port, far.client_agent        client_agent, far.db_edition          db_edition, far.db_name             db_name, far.table_name          table_name, ''               as     node_path, far.affect_rows         affect_rows, far.execute_cost        execute_cost, far.session_id          session_id, far.explain             explain, far.sql_parse_flag      sql_parse_flag, extrat_flag, far.check_permission_id check_permission_id, u.name                  dept_name, far.original_sql        original_sql, u.dept_id               dept_id, far.high_risk_flag      high_risk_flag, far.file_path           file_path from (select * from dwd_fact_audit_record f where f.created_time < ? and f.created_time >= (select max(last_time) from default.calculate_time where type = 'DWS_OPERATE') and f.target_type = 'CQ_SYSTEM') far left join (select user.user_id, o.name as name, o.id as dept_id from dwd_dim_user user inner join dwd_dim_org o on user.department_id = o.id and user.is_deleted = false) u on u.user_id = far.user_id;
     prop.deleteDwsOperate=ALTER TABLE default.dws_audit DELETE where created_time < ? and created_time >= (select max(last_time) from default.calculate_time where type = 'DWS_OPERATE') and target_type = 'CQ_SYSTEM'
     prop.dwsAuth=insert into default.dws_authorize select generateUUIDv4() as id, a.create_time, a.auth_user_id, u1.name, a.authed_user_id, u2.name, a.auth_type, a.auth_operate, a.authed_role_id, r.name, a.authed_permission_id, p.name, a.authed_resource_id, p.connection_id, p.data_source_name, p.conn_name, ''               as authed_db_name, ''               as authed_table_name, ''               as authed_column_name, a.authed_resource_id, a.authed_operation, a.detail, a.comment, a.session_id, a.affect_flow_id, a.client_ip from ( SELECT * FROM dwd_fact_authorize_record where create_time < ? and create_time >= (select max(last_time) from default.calculate_time where type = 'DWS_AUTH')) a left join dwd_dim_user u1 on a.auth_user_id = u1.user_id and u1.is_deleted = false left join dwd_dim_user u2 on a.authed_user_id = u2.user_id and u2.is_deleted = false left join dwd_dim_role r on a.authed_role_id = r.id left join (select p.id, p.name, c.connection_id as connection_id, c.data_source_name, c.conn_name from dwd_dim_permission p left join dwd_dim_user_connections c on p.connection_id = c.connection_id) p on a.authed_permission_id = p.id;
     prop.deleteDwsAuth=ALTER TABLE default.dws_authorize DELETE where create_time < ? and create_time >= (select max(last_time) from default.calculate_time where type = 'DWS_AUTH');
@@ -1379,6 +1476,34 @@ data:
     prop.mvOrgObjectTimeAmountYears=insert into default.mv_org_object_time_amount_avg_years SELECT c_1.user_id, c_1.connection_id, c_1.db_type, c_1.db_name, c_1.table_name, c_1.operate_type, c_1.dept_id, c_1.business_type, c_1.years                              as time, sum(c_1.amount), round(sum(c_1.execute_avg) / count(*)) AS execute_avg FROM mv_org_object_time_amount_avg c_1 WHERE c_1.business_type = 'EXTRAT_DB' AND time < (date_trunc('hour', toDateTime(?)) + interval 1 hour) AND time >= date_trunc('year', toDateTime(?)) AND connection_id <= ? AND connection_id >= ? GROUP BY c_1.user_id, c_1.connection_id, c_1.db_type, c_1.db_name, c_1.table_name, c_1.operate_type, c_1.dept_id, c_1.business_type, c_1.years;
     prop.deleteMvOrgObjectTimeAmountYears=ALTER TABLE default.mv_org_object_time_amount_avg_years DELETE WHERE time in (SELECT time FROM default.mv_org_object_time_amount_avg_years WHERE time < (date_trunc('hour', toDateTime(?)) + interval 1 hour) AND time >= date_trunc('year', toDateTime(?)));
     prop.splitMvOrgObjectTimeAmountYears=SELECT MAX(connection_id) as max, MIN(connection_id) as min FROM mv_org_object_time_amount_avg WHERE business_type = 'EXTRAT_DB' AND years < (date_trunc('hour', toDateTime(?)) + interval 1 hour) AND years >= date_trunc('year', toDateTime(?))
+
+    prop.mvOrgObjectHighRiskTimeAmount=insert into default.mv_org_object_time_amount_avg_high_risk SELECT c_1.user_id, c_1.connection_id, c_1.db_type, c_1.db_name, c_1.table_name, c_1.operate_type, c_1.dept_id, c_1.business_type, c_1.years, c_1.quarters, c_1.months, c_1.weeks, c_1.days, c_1.hours, count(1)                            AS amount, round(sum(execute_cost) / count(*)) AS execute_avg FROM (SELECT t1.user_id                           as user_id, t1.connection_id                     as connection_id, t1.db_type                           as db_type, t1.db_name                           as db_name, t1.table_name                        as table_name, t1.operate_type                      as operate_type, t1.dept_id                           as dept_id, t1.business_type                     as business_type, t1.execute_cost                      as execute_cost, date_trunc('year', t1.begin_time)    as years, date_trunc('quarter', t1.begin_time) as quarters, date_trunc('month', t1.begin_time)   as months, date_trunc('week', t1.begin_time)    as weeks, date_trunc('day', t1.begin_time)     as days, date_trunc('hour', t1.begin_time)    as hours FROM dws_audit t1 WHERE date_trunc('hour', t1.begin_time) < (date_trunc('hour', toDateTime(?)) + interval 1 hour) AND date_trunc('hour', t1.begin_time) >= date_trunc('hour', toDateTime(?)) AND connection_id <= ? AND connection_id >= ? AND t1.high_risk_flag >= 1) c_1 GROUP BY c_1.user_id, c_1.connection_id, c_1.db_type, c_1.db_name, c_1.table_name, c_1.operate_type, c_1.dept_id, c_1.business_type, c_1.years, c_1.months, c_1.days, c_1.hours, c_1.quarters, c_1.weeks;
+    prop.deleteMvOrgObjectHighRiskTimeAmount=ALTER TABLE default.mv_org_object_time_amount_avg_high_risk DELETE WHERE hours in (SELECT hours FROM default.mv_org_object_time_amount_avg_high_risk WHERE date_trunc('hour', hours)  < (date_trunc('hour', toDateTime(?)) + interval 1 hour ) AND date_trunc('hour', hours)  >= date_trunc('hour', toDateTime(?)));
+    prop.splitMvOrgObjectHighRiskTimeAmount=SELECT MAX(connection_id) as max, MIN(connection_id) as min FROM dws_audit WHERE date_trunc('hour', begin_time) < (date_trunc('hour', toDateTime(?)) + interval 1 hour) AND date_trunc('hour', begin_time) >= date_trunc('hour', toDateTime(?)) AND high_risk_flag >= 1
+
+    prop.mvOrgObjectHighRiskTimeAmountHours=insert into default.mv_org_object_time_amount_avg_hours_high_risk SELECT c_1.user_id, c_1.connection_id, c_1.db_type, c_1.db_name, c_1.table_name, c_1.operate_type, c_1.dept_id, c_1.business_type, c_1.hours                              as time, sum(c_1.amount), round(sum(c_1.execute_avg) / count(*)) AS execute_avg FROM mv_org_object_time_amount_avg_high_risk c_1 WHERE c_1.business_type = 'EXTRAT_DB' AND time < (date_trunc('hour', toDateTime(?)) + interval 1 hour) AND time >= date_trunc('hour', toDateTime(?)) AND connection_id <= ? AND connection_id >= ? GROUP BY c_1.user_id, c_1.connection_id, c_1.db_type, c_1.db_name, c_1.table_name, c_1.operate_type, c_1.dept_id, c_1.business_type, c_1.hours;
+    prop.deleteMvOrgObjectHighRiskTimeAmountHours=ALTER TABLE default.mv_org_object_time_amount_avg_hours_high_risk DELETE WHERE time in (SELECT time FROM default.mv_org_object_time_amount_avg_hours_high_risk WHERE time < (date_trunc('hour', toDateTime(?)) + interval 1 hour) AND time >= date_trunc('hour', toDateTime(?)));
+    prop.splitMvOrgObjectHighRiskTimeAmountHours=SELECT MAX(connection_id) as max, MIN(connection_id) as min FROM mv_org_object_time_amount_avg_high_risk WHERE business_type = 'EXTRAT_DB' AND hours < (date_trunc('hour', toDateTime(?)) + interval 1 hour) AND hours >= date_trunc('hour', toDateTime(?))
+
+    prop.mvOrgObjectHighRiskTimeAmountDays=insert into default.mv_org_object_time_amount_avg_days_high_risk SELECT c_1.user_id, c_1.connection_id, c_1.db_type, c_1.db_name, c_1.table_name, c_1.operate_type, c_1.dept_id, c_1.business_type, c_1.days                               as time, sum(c_1.amount), round(sum(c_1.execute_avg) / count(*)) AS execute_avg FROM mv_org_object_time_amount_avg_high_risk c_1 WHERE c_1.business_type = 'EXTRAT_DB' AND time < (date_trunc('hour', toDateTime(?)) + interval 1 hour) AND time >= date_trunc('day', toDateTime(?)) AND connection_id <= ? AND connection_id >= ? GROUP BY c_1.user_id, c_1.connection_id, c_1.db_type, c_1.db_name, c_1.table_name, c_1.operate_type, c_1.dept_id, c_1.business_type, c_1.days;
+    prop.deleteMvOrgObjectHighRiskTimeAmountDays=ALTER TABLE default.mv_org_object_time_amount_avg_days_high_risk DELETE WHERE time in (SELECT time FROM default.mv_org_object_time_amount_avg_days_high_risk WHERE time < (date_trunc('hour', toDateTime(?)) + interval 1 hour) AND time >= date_trunc('day', toDateTime(?)));
+    prop.splitMvOrgObjectHighRiskTimeAmountDays=SELECT MAX(connection_id) as max, MIN(connection_id) as min FROM mv_org_object_time_amount_avg_high_risk WHERE business_type = 'EXTRAT_DB' AND days < (date_trunc('hour', toDateTime(?)) + interval 1 hour) AND days >= date_trunc('day', toDateTime(?))
+
+    prop.mvOrgObjectHighRiskTimeAmountWeeks=insert into default.mv_org_object_time_amount_avg_weeks_high_risk SELECT c_1.user_id, c_1.connection_id, c_1.db_type, c_1.db_name, c_1.table_name, c_1.operate_type, c_1.dept_id, c_1.business_type, c_1.weeks                              as time, sum(c_1.amount), round(sum(c_1.execute_avg) / count(*)) AS execute_avg FROM mv_org_object_time_amount_avg_high_risk c_1 WHERE c_1.business_type = 'EXTRAT_DB' AND time < (date_trunc('hour', toDateTime(?)) + interval 1 hour) AND time >= date_trunc('week', toDateTime(?)) AND connection_id <= ? AND connection_id >= ? GROUP BY c_1.user_id, c_1.connection_id, c_1.db_type, c_1.db_name, c_1.table_name, c_1.operate_type, c_1.dept_id, c_1.business_type, c_1.weeks;
+    prop.deleteMvOrgObjectHighRiskTimeAmountWeeks=ALTER TABLE default.mv_org_object_time_amount_avg_weeks_high_risk DELETE WHERE time in (SELECT time FROM default.mv_org_object_time_amount_avg_weeks_high_risk WHERE time < (date_trunc('hour', toDateTime(?)) + interval 1 hour) AND time >= date_trunc('week', toDateTime(?)));
+    prop.splitMvOrgObjectHighRiskTimeAmountWeeks=SELECT MAX(connection_id) as max, MIN(connection_id) as min FROM mv_org_object_time_amount_avg_high_risk WHERE business_type = 'EXTRAT_DB' AND weeks < (date_trunc('hour', toDateTime(?)) + interval 1 hour) AND weeks >= date_trunc('week', toDateTime(?))
+
+    prop.mvOrgObjectHighRiskTimeAmountMonths=insert into default.mv_org_object_time_amount_avg_months_high_risk SELECT c_1.user_id, c_1.connection_id, c_1.db_type, c_1.db_name, c_1.table_name, c_1.operate_type, c_1.dept_id, c_1.business_type, c_1.months                             as time, sum(c_1.amount), round(sum(c_1.execute_avg) / count(*)) AS execute_avg FROM mv_org_object_time_amount_avg_high_risk c_1 WHERE c_1.business_type = 'EXTRAT_DB' AND time < (date_trunc('hour', toDateTime(?)) + interval 1 hour) AND time >= date_trunc('month', toDateTime(?)) AND connection_id <= ? AND connection_id >= ? GROUP BY c_1.user_id, c_1.connection_id, c_1.db_type, c_1.db_name, c_1.table_name, c_1.operate_type, c_1.dept_id, c_1.business_type, c_1.months;
+    prop.deleteMvOrgObjectHighRiskTimeAmountMonths=ALTER TABLE default.mv_org_object_time_amount_avg_months_high_risk DELETE WHERE time in (SELECT time FROM default.mv_org_object_time_amount_avg_months_high_risk WHERE time < (date_trunc('hour', toDateTime(?)) + interval 1 hour) AND time >= date_trunc('month', toDateTime(?)));
+    prop.splitMvOrgObjectHighRiskTimeAmountMonths=SELECT MAX(connection_id) as max, MIN(connection_id) as min FROM mv_org_object_time_amount_avg_high_risk WHERE business_type = 'EXTRAT_DB' AND months < (date_trunc('hour', toDateTime(?)) + interval 1 hour) AND months >= date_trunc('month', toDateTime(?))
+
+    prop.mvOrgObjectHighRiskTimeAmountQuarters=insert into default.mv_org_object_time_amount_avg_quarters_high_risk SELECT c_1.user_id, c_1.connection_id, c_1.db_type, c_1.db_name, c_1.table_name, c_1.operate_type, c_1.dept_id, c_1.business_type, c_1.quarters                           as time, sum(c_1.amount), round(sum(c_1.execute_avg) / count(*)) AS execute_avg FROM mv_org_object_time_amount_avg_high_risk c_1 WHERE c_1.business_type = 'EXTRAT_DB' AND time < (date_trunc('hour', toDateTime(?)) + interval 1 hour) AND time >= date_trunc('quarter', toDateTime(?)) AND connection_id <= ? AND connection_id >= ? GROUP BY c_1.user_id, c_1.connection_id, c_1.db_type, c_1.db_name, c_1.table_name, c_1.operate_type, c_1.dept_id, c_1.business_type, c_1.quarters;
+    prop.deleteMvOrgObjectHighRiskTimeAmountQuarters=ALTER TABLE default.mv_org_object_time_amount_avg_quarters_high_risk DELETE WHERE time in (SELECT time FROM default.mv_org_object_time_amount_avg_quarters_high_risk WHERE time < (date_trunc('hour', toDateTime(?)) + interval 1 hour) AND time >= date_trunc('quarter', toDateTime(?)));
+    prop.splitMvOrgObjectHighRiskTimeAmountQuarters=SELECT MAX(connection_id) as max, MIN(connection_id) as min FROM mv_org_object_time_amount_avg_high_risk WHERE business_type = 'EXTRAT_DB' AND quarters < (date_trunc('hour', toDateTime(?)) + interval 1 hour) AND quarters >= date_trunc('quarter', toDateTime(?))
+
+    prop.mvOrgObjectHighRiskTimeAmountYears=insert into default.mv_org_object_time_amount_avg_years_high_risk SELECT c_1.user_id, c_1.connection_id, c_1.db_type, c_1.db_name, c_1.table_name, c_1.operate_type, c_1.dept_id, c_1.business_type, c_1.years                              as time, sum(c_1.amount), round(sum(c_1.execute_avg) / count(*)) AS execute_avg FROM mv_org_object_time_amount_avg_high_risk c_1 WHERE c_1.business_type = 'EXTRAT_DB' AND time < (date_trunc('hour', toDateTime(?)) + interval 1 hour) AND time >= date_trunc('year', toDateTime(?)) AND connection_id <= ? AND connection_id >= ? GROUP BY c_1.user_id, c_1.connection_id, c_1.db_type, c_1.db_name, c_1.table_name, c_1.operate_type, c_1.dept_id, c_1.business_type, c_1.years;
+    prop.deleteMvOrgObjectHighRiskTimeAmountYears=ALTER TABLE default.mv_org_object_time_amount_avg_years_high_risk DELETE WHERE time in (SELECT time FROM default.mv_org_object_time_amount_avg_years_high_risk WHERE time < (date_trunc('hour', toDateTime(?)) + interval 1 hour) AND time >= date_trunc('year', toDateTime(?)));
+    prop.splitMvOrgObjectHighRiskTimeAmountYears=SELECT MAX(connection_id) as max, MIN(connection_id) as min FROM mv_org_object_time_amount_avg_high_risk WHERE business_type = 'EXTRAT_DB' AND years < (date_trunc('hour', toDateTime(?)) + interval 1 hour) AND years >= date_trunc('year', toDateTime(?))
 
     prop.dwdDimTimeHour=insert into dwd_dim_time_hour WITH date_trunc('hour', toDateTime('2022-01-01 00:00:00')) AS start, date_trunc('hour', now() + interval 1 year) AS end, arrayMap( x -> toDateTime(addHours(start, x)), range(0, dateDiff('hour', start, end))) AS hours SELECT arrayJoin(hours) AS hour;
     prop.dwdDimTimeDay=insert into dwd_dim_time_day WITH dateTrunc('day', toDateTime('2022-01-01 00:00:00')) AS start, date_trunc('day', now() + interval 1 year) AS end, arrayMap( x -> toDateTime(addDays(start, x)), range(0, dateDiff('day', start, end))) AS days SELECT arrayJoin(days) AS day;

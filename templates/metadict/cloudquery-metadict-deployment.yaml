@@ -16,27 +16,22 @@ spec:
     spec:
       containers:
         - name: cloudquery-metadict
-          image: yshanchui/cloudquery-metadict:cloudquery-club-V2.4.0
+          image: yshanchui/cloudquery-metadict:cloudquery-club-{{ .Values.version }}
           env:
             - name: _JAVA_OPTIONS
               value: -Xmx1g -Xms1g
           resources:
-            requests:
-              memory: "512Mi"
-              cpu: "100m"
-            limits:
-              memory: "1500Mi"
-              cpu: "500m"
+            {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:
             - name: config-volume
               mountPath: /opt/cloudquery/config/application.yml
               subPath: application.yml
-            - name: lucene-indexes-volume
-              mountPath: /opt/cloudquery/LuceneIndexes
+#            - name: lucene-indexes-volume
+#              mountPath: /opt/cloudquery/LuceneIndexes
       volumes:
         - name: config-volume
           configMap:
             name: cloudquery-metadict-configmap
-        - name: lucene-indexes-volume
-          persistentVolumeClaim:
-            claimName: cloudquery-metadict-lucene-indexes
+#        - name: lucene-indexes-volume
+#          persistentVolumeClaim:
+#            claimName: cloudquery-metadict-lucene-indexes

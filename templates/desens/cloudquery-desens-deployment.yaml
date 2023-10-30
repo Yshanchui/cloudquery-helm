@@ -16,17 +16,12 @@ spec:
     spec:
       containers:
         - name: cloudquery-desens
-          image: yshanchui/cloudquery-desens:cloudquery-club-V2.4.0
+          image: yshanchui/cloudquery-desens:cloudquery-club-{{ .Values.version }}
           env:
             - name: _JAVA_OPTIONS
               value: -Xmx800m -Xms800m
           resources:
-            requests:
-              memory: "500Mi"
-              cpu: "100m"
-            limits:
-              memory: "1Gi"
-              cpu: "500m"
+            {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:
             - name: config-volume
               mountPath: /opt/cloudquery/config/application.yml

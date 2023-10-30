@@ -45,7 +45,7 @@ data:
         type: redis
       redis:
         database: 1
-        host: cloudquery-redis-master
+        host: cloudquery-redis
         port: 6379
         password: nya6X#uSes@
         timeout: 5000

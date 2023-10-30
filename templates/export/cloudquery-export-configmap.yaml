@@ -4,6 +4,7 @@ metadata:
   name: cloudquery-export-configmap
 data:
   application.yml: |
+    # 指定服务启动端口
     server:
       port: 8787
       error:
@@ -45,7 +46,7 @@ data:
         type: redis
       redis:
         database: 1
-        host: cloudquery-redis-master
+        host: cloudquery-redis
         port: 6379
         password: nya6X#uSes@
         timeout: 5000
@@ -55,7 +56,7 @@ data:
       swagger:
         enable: true
       datasource:
-        url: jdbc:postgresql://cloudquery-postgresql:5432/postgres
+        url: jdbc:postgresql://cloudquery-postgreSQL:5432/postgres
         username: postgres
         password: WVCmFZs841@
         driver-class-name: org.postgresql.Driver
@@ -115,6 +116,10 @@ data:
       schedule:
         period: 1 # 分钟 定时去任务表中取排队任务
         dead-task: 01:00:00 #死任务阈值，超过这个时间就将运行任务设置失败
+    
+    audit:
+      export:
+        url: jdbc:clickhouse://cloudquery-clickhouse:8123/default?rewriteBatchedStatements=true&use_server_time_zone=Asia/Shanghai&use_time_zone=Asia/Shanghai
     
     # 文件存储路径
     task-center:

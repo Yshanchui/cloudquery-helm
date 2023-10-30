@@ -10,10 +10,10 @@ data:
       error:
         include-exception: false
         include-stacktrace: always
-
+    
     file_system:
       data_change: /opt/cloudquery/DataChange
-
+    
     #################################################dubbo的配置#####################################################
     dubbo:
       scan:
@@ -28,7 +28,7 @@ data:
         id: flow
         name: dubbo
         port: 12348
-
+    
       registry:
         id: zookeeper-flowProd
         address: zookeeper://cloudquery-zookeeper:2181
@@ -36,7 +36,7 @@ data:
         timeout: 30000
         group: cloudquery_test1
         check: false
-
+    
     spring:
       main:
         allow-circular-references: true
@@ -47,11 +47,11 @@ data:
           connect-string: cloudquery-zookeeper:2181
       redis:
         database: 1
-        host: cloudquery-redis-master
+        host: cloudquery-redis
         port: 6379
         password: nya6X#uSes@
       datasource:
-        jdbc-url: jdbc:postgresql://cloudquery-postgresql:5432/postgres
+        jdbc-url: jdbc:postgresql://cloudquery-postgreSQL:5432/postgres
         username: postgres
         password: WVCmFZs841@
         driver-class-name: org.postgresql.Driver
@@ -71,7 +71,12 @@ data:
                 non_contextual_creation: true
       swagger:
         enable: true
-
+    
+      servlet:
+        multipart:
+          max-file-size: 100MB
+          max-request-size: 100MB
+    
       activiti:
         db-history-used: true
         history-level: full
@@ -79,7 +84,7 @@ data:
         database-schema-update: true
         async-executor-activate: true
         datasource:
-          jdbc-url: jdbc:postgresql://cloudquery-postgresql:5432/postgres?currentSchema=activiti
+          jdbc-url: jdbc:postgresql://cloudquery-postgreSQL:5432/postgres?currentSchema=activiti
           username: postgres
           password: WVCmFZs841@
           driver-class-name: org.postgresql.Driver
@@ -94,15 +99,15 @@ data:
         #  history-level: full
         #校验流程文件，默认校验resources下的processes文件夹里的流程文件
         #  check-process-definitions: true
-
-
+    
+    
     springdoc:
       api-docs:
         enabled: false
       swagger-ui:
         enabled: false
-
-
+    
+    
     #流程三方对接模式
     #flow:
     #  three-way-docking:

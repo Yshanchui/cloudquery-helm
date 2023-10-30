@@ -16,29 +16,24 @@ spec:
     spec:
       containers:
         - name: export
-          image: yshanchui/cloudquery-export:cloudquery-club-V2.4.0
+          image: yshanchui/cloudquery-export:cloudquery-club-{{ .Values.version }}
           env:
             - name: CLOUDQUERY_HOME
               value: /opt/cloudquery/data
             - name: _JAVA_OPTIONS
               value: -Xmx1g -Xms1g
           resources:
-            requests:
-              memory: "512Mi"
-              cpu: "100m"
-            limits:
-              memory: "1500Mi"
-              cpu: "500m"
+            {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:
-            - name: data-volume
-              mountPath: /opt/cloudquery/data
+#            - name: data-volume
+#              mountPath: /opt/cloudquery/data
             - name: config-volume
               mountPath: /opt/cloudquery/config/application.yml
               subPath: application.yml
       volumes:
-        - name: data-volume
-          persistentVolumeClaim:
-            claimName: cloudquery-user-data
+#        - name: data-volume
+#          persistentVolumeClaim:
+#            claimName: cloudquery-user-data
         - name: config-volume
           configMap:
             name: cloudquery-export-configmap

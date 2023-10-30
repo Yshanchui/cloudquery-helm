@@ -16,27 +16,22 @@ spec:
     spec:
       containers:
         - name: cloudquery-flow
-          image: yshanchui/cloudquery-flow:cloudquery-club-V2.4.0
+          image: yshanchui/cloudquery-flow:cloudquery-club-{{ .Values.version }}
           env:
             - name: _JAVA_OPTIONS
               value: -Xmx800m -Xms800m
           resources:
-            requests:
-              memory: "500Mi"
-              cpu: "100m"
-            limits:
-              memory: "1Gi"
-              cpu: "500m"
+            {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:
-            - name: data-volume
-              mountPath: /opt/cloudquery/DataChange
+#            - name: data-volume
+#              mountPath: /opt/cloudquery/DataChange
             - name: config-volume
               mountPath: /opt/cloudquery/config/application.yml
               subPath: application.yml
       volumes:
-        - name: data-volume
-          persistentVolumeClaim:
-            claimName: cloudquery-flow-data-change
+#        - name: data-volume
+#          persistentVolumeClaim:
+#            claimName: cloudquery-flow-data-change
         - name: config-volume
           configMap:
             name: cloudquery-flow-configmap

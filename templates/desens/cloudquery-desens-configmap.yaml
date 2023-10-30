@@ -37,12 +37,12 @@ data:
         date-format: yyyy-MM-dd HH:mm:ss
       redis:
         database: 1
-        host: cloudquery-redis-master
+        host: cloudquery-redis
         port: 6379
         password: nya6X#uSes@
         timeout: 5000
       datasource:
-        url: jdbc:postgresql://cloudquery-postgresql:5432/postgres
+        url: jdbc:postgresql://cloudquery-postgreSQL:5432/postgres
         username: postgres
         password: WVCmFZs841@
         driver-class-name: org.postgresql.Driver

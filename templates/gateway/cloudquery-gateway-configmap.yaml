@@ -12,17 +12,17 @@ data:
         include-stacktrace: always
       servlet:
         context-path: /gateway
-
+    
     spring:
       application:
         name: cloudquery-gateway
       redis:
         database: 1
-        host: cloudquery-redis-master
+        host: cloudquery-redis
         port: 6379
         password: nya6X#uSes@
       datasource:
-        url: jdbc:postgresql://cloudquery-postgresql:5432/postgres
+        url: jdbc:postgresql://cloudquery-postgreSQL:5432/postgres
         username: postgres
         password: WVCmFZs841@
         driver-class-name: org.postgresql.Driver
@@ -44,8 +44,8 @@ data:
       cloud:
         zookeeper:
           connect-string: cloudquery-zookeeper:2181
-
-    ######################网关配置############################
+        
+        ######################网关配置############################
         gateway:
           discovery:
             locator:
@@ -100,7 +100,7 @@ data:
         timeout: 300000
         group: cloudquery_test1
         check: false
-
+    
     cq:
       gateway:
         version: v2

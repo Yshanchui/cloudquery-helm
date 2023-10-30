@@ -1,20 +1,14 @@
 name: cloudquery
 
-storageClassName: "ebs-gp3"
+version: V2.5.0
 
-zookeeper:
-  addr: cloudquery-zookeeper
+storageClassName: ebs-gp3
 
-redis:
-  addr: cloudquery-redis-master
-  password: nya6X#uSes@
+resources:
+  limits:
+    cpu: 1
+    memory: 3Gi
+  requests:
+    cpu: 300m
+    memory: 512Mi
 
-clickhouse:
-  addr:
-  username: admin
-  password: aIzFD0oEUa
-
-pgsql:
-  addr:
-  username: postgres
-  password: WVCmFZs841@

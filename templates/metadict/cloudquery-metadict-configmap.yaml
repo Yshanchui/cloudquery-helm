@@ -11,12 +11,12 @@ data:
         include-stacktrace: always
       servlet:
         context-path: /dict
-
+    
     logging:
       level:
         sql: error
         cn.bintools.metadict: info
-
+    
     spring:
       mvc:
         async:
@@ -25,7 +25,7 @@ data:
         name:
           cloudquery-MetaDictProd
       datasource:
-        url: jdbc:postgresql://cloudquery-postgresql:5432/postgres
+        url: jdbc:postgresql://cloudquery-postgreSQL:5432/postgres
         username: postgres
         password: WVCmFZs841@
         driver-class-name: org.postgresql.Driver
@@ -75,17 +75,17 @@ data:
             jdbc:
               batch_size: 250
               time_zone: Asia/Shanghai
-
+    
         hibernate:
           ddl-auto: validate
         open-in-view: false
-
+    
       redis:
         database: 1
-        host: cloudquery-redis-master
+        host: cloudquery-redis
         port: 6379
         password: nya6X#uSes@
-
+    
     dubbo:
       scan:
         base-packages: cn.bintools.cloudquery.metadict
@@ -107,7 +107,7 @@ data:
         timeout: 30000
         group: cloudquery_test1
         check: false
-
+    
     metadict:
       # 定义dm module 路径
       server_home: /opt/cloudquery/dmc/dms_home
