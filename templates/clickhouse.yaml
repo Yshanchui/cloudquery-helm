@@ -15,18 +15,16 @@ spec:
     spec:
       containers:
         - name: cloudquery-clickhouse
-          image: bitnami/clickhouse:23.9.2  # 使用适当的 ClickHouse 版本
+          image: clickhouse/clickhouse-server:23.8.4  # 使用适当的 ClickHouse 版本
           env:
             - name: ALLOW_EMPTY_PASSWORD
               value: "yes"
-          securityContext:
-            runAsUser: 0
           ports:
             - containerPort: 8123
             - containerPort: 9000
           volumeMounts:
             - name: cloudquery-clickhouse-data
-              mountPath: /bitnami/clickhouse
+              mountPath: /var/lib/clickhouse
   volumeClaimTemplates:
     - metadata:
         name: cloudquery-clickhouse-data
