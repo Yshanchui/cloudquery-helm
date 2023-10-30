@@ -19,12 +19,14 @@ spec:
           env:
             - name: ALLOW_EMPTY_PASSWORD
               value: "yes"
+          securityContext:
+            runAsUser: 0
           ports:
             - containerPort: 8123
             - containerPort: 9000
           volumeMounts:
             - name: cloudquery-clickhouse-data
-              mountPath: /var/lib/clickhouse
+              mountPath: /bitnami/clickhouse
   volumeClaimTemplates:
     - metadata:
         name: cloudquery-clickhouse-data
