@@ -5,7 +5,7 @@ cloudquery kubernetes helm install
 一体化数据库操作管控云平台
 https://www.cloudquery.club
 
-v2.3.0压缩包 转 helm部署
+v2.6.0压缩包 转 helm部署
 
 下载helm包,进入目录
 
