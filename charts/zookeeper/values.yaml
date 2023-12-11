@@ -221,7 +221,9 @@ existingConfigmap: ""
 ##   - name: FOO
 ##     value: "bar"
 ##
-extraEnvVars: []
+extraEnvVars:
+  - name: TZ
+    value: Asia/Shanghai
 ## @param extraEnvVarsCM Name of existing ConfigMap containing extra env vars for ZooKeeper nodes
 ##
 extraEnvVarsCM: ""
@@ -880,3 +882,6 @@ tls:
   resources:
     limits: {}
     requests: {}
+env:
+  - name: TZ
+    value: Asia/Shanghai

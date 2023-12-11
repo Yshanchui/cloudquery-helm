@@ -17,6 +17,9 @@ spec:
       containers:
         - image: yshanchui/cloudquery-base-web:cloudquery-club-{{ .Values.version }}
           name: enterprise-web
+          env:
+            - name: TZ
+              value: Asia/Shanghai
           ports:
             - containerPort: 9898
             - containerPort: 9999
@@ -24,12 +27,21 @@ spec:
             - name: enterprise-web-nginx-conf
               mountPath: /etc/nginx/nginx.conf
               subPath: nginx.conf
-#            - name: enterprise-web-dq
-#              mountPath: /opt/cloudquery/dq
       volumes:
         - name: enterprise-web-nginx-conf
           configMap:
             name: enterprise-web-nginx-conf
-#        - name: enterprise-web-dq
-#          persistentVolumeClaim:
-#            claimName: enterprise-web-dq
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: enterprise-web
+  name: enterprise-web
+spec:
+  ports:
+    - name: "http"
+      port: 80
+      targetPort: 9898
+  selector:
+    app: enterprise-web

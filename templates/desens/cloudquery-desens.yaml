@@ -20,13 +20,21 @@ spec:
           env:
             - name: _JAVA_OPTIONS
               value: -Xmx800m -Xms800m
+            - name: TZ
+              value: Asia/Shanghai
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-          volumeMounts:
-            - name: config-volume
-              mountPath: /opt/cloudquery/config/application.yml
-              subPath: application.yml
-      volumes:
-        - name: config-volume
-          configMap:
-            name: cloudquery-desens-configmap
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: cloudquery-desens
+  name: cloudquery-desens
+spec:
+  ports:
+    - name: "http"
+      port: 6202
+      targetPort: 6202
+  selector:
+    app: cloudquery-desens

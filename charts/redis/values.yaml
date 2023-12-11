@@ -198,7 +198,9 @@ master:
   ##   - name: FOO
   ##     value: "bar"
   ##
-  extraEnvVars: []
+  extraEnvVars:
+    - name: TZ
+      value: Asia/Shanghai
   ## @param master.extraEnvVarsCM Name of existing ConfigMap containing extra env vars for Redis&reg; master nodes
   ##
   extraEnvVarsCM: ""
@@ -615,7 +617,9 @@ replica:
   ##   - name: FOO
   ##     value: "bar"
   ##
-  extraEnvVars: []
+  extraEnvVars:
+    - name: TZ
+      value: Asia/Shanghai
   ## @param replica.extraEnvVarsCM Name of existing ConfigMap containing extra env vars for Redis&reg; replicas nodes
   ##
   extraEnvVarsCM: ""
@@ -1105,7 +1109,9 @@ sentinel:
   ##   - name: FOO
   ##     value: "bar"
   ##
-  extraEnvVars: []
+  extraEnvVars:
+    - name: TZ
+      value: Asia/Shanghai
   ## @param sentinel.extraEnvVarsCM Name of existing ConfigMap containing extra env vars for Redis&reg; Sentinel nodes
   ##
   extraEnvVarsCM: ""
@@ -1576,7 +1582,9 @@ metrics:
   ##   - name: FOO
   ##     value: "bar"
   ##
-  extraEnvVars: []
+  extraEnvVars:
+    - name: TZ
+      value: Asia/Shanghai
   ## Configure Container Security Context
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
   ## @param metrics.containerSecurityContext.enabled Enabled Redis&reg; exporter containers' Security Context
@@ -1853,3 +1861,7 @@ useExternalDNS:
   suffix: ""
   annotationKey: external-dns.alpha.kubernetes.io/
   additionalAnnotations: {}
+
+env:
+  - name: TZ
+    value: Asia/Shanghai

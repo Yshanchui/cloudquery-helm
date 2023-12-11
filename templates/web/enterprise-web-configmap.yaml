@@ -5,322 +5,244 @@ metadata:
 data:
   nginx.conf: |
     worker_processes 4;
+    
+     events {
+       worker_connections 1024;
+     }
+    
+    
+     http {
+       include mime.types;
+       default_type application/octet-stream;
+       sendfile on;
+       keepalive_requests          1024;
+       keepalive_timeout           300s;
+       send_timeout                300s;
+       proxy_connect_timeout       300s;
+       proxy_send_timeout          300s;
+       proxy_read_timeout          300s;
+    
+       gzip on;
+       gzip_min_length 1k;
+       gzip_comp_level 5;
+       gzip_types text/plain application/javascript application/x-javascript text/javascript text/xml text/css application/json;
+       gzip_disable "MSIE [1-6]\.";
+       gzip_vary on;
+    
+       upstream user_server{
+         server cloudquery-user:8001;
+         keepalive 128;
+       }
+    
+       upstream dms_server{
+         server cloudquery-dms:9001;
+         keepalive 128;
+       }
+    
+       upstream export_server{
+         server cloudquery-export:8787;
+         keepalive 128;
+       }
+    
+    
+    
+       upstream terminal_server{
+         server cloudquery-terminal:9950;
+       }
+    
+       upstream flow_server{
+         server cloudquery-flow:9876;
+         keepalive 128;
+       }
+    
+       upstream desens_server{
+         server cloudquery-desens:6202;
+       }
+    
+       upstream lsp_server {
+         server cloudquery-dms:4389;
+       }
+    
+       upstream data_dict_server {
+           server cloudquery-metadict:9192;
+       }
+    
+       upstream debug_server{
+           server cloudquery-debug:8899;
+       }
+    
+       upstream analyze_server{
+           server cloudquery-analyze:9007;
+           keepalive 128;
+       }
+    
+       server {
+         listen 9898;
+         server_name localhost
+         client_max_body_size 120M;
+         charset utf-8; #编码格式
+         location ^~ /user {
+           proxy_pass http://user_server/user;
+           proxy_set_header Host $host;
+           proxy_set_header Cookie $http_cookie;
+           proxy_set_header X-Real-IP $remote_addr;
+           proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+           proxy_cookie_path ~/user/? /;
+           proxy_http_version 1.1;
+           proxy_set_header Connection "";
+         }
+         location ^~ /gateway/cq {
+           proxy_pass http://gateway_server/gateway/cq;
+           proxy_set_header Host $host;
+           proxy_set_header Cookie $http_cookie;
+           proxy_set_header X-Real-IP $remote_addr;
+           proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+           proxy_cookie_path ~/gateway/cq/? /;
+           proxy_http_version 1.1;
+           proxy_set_header Connection "";
+         }
+         location ^~ /dms {
+           proxy_pass http://dms_server/dms;
+           proxy_set_header Host $host;
+           proxy_set_header Cookie $http_cookie;
+           proxy_set_header X-Real-IP $remote_addr;
+           proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+           proxy_cookie_path ~/dms/? /;
+           proxy_http_version 1.1;
+           proxy_set_header Connection "";
+         }
+         location ^~ /export {
+           proxy_pass http://export_server/export;
+           proxy_set_header Host $host;
+           proxy_set_header Cookie $http_cookie;
+           proxy_set_header X-Real-IP $remote_addr;
+           proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+           proxy_cookie_path ~/export/? /;
+           proxy_http_version 1.1;
+           proxy_set_header Connection "";
+         }
+    
+    
+         location ^~ /terminal {
+           proxy_pass http://terminal_server/terminal;
+           proxy_set_header Host $host;
+           proxy_set_header X-Real-IP $remote_addr;
+           proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+           proxy_set_header X-Forwarded-Proto $scheme;
+           proxy_http_version 1.1;
+           proxy_set_header Upgrade $http_upgrade;
+           proxy_set_header Connection "upgrade";
+         }
+         location ^~ /api/flow {
+           proxy_pass http://flow_server/flow;
+           proxy_set_header Host $host;
+           proxy_set_header X-Real-IP $remote_addr;
+           proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+           proxy_set_header X-Forwarded-Proto $scheme;
+           proxy_http_version 1.1;
+           proxy_set_header Connection "";
+         }
+    
+         location ^~ /desens {
+           proxy_pass http://desens_server/desens;
+           proxy_set_header Host $host;
+           proxy_set_header X-Real-IP $remote_addr;
+           proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+           proxy_http_version 1.1;
+         }
+    
+         location ^~ /lspserver {
+           proxy_pass http://lsp_server;
+           proxy_set_header Host $host;
+           proxy_set_header X-Real-IP $remote_addr;
+           proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+           proxy_set_header X-Forwarded-Proto $scheme;
+           proxy_http_version 1.1;
+           proxy_set_header Upgrade $http_upgrade;
+           proxy_set_header Connection "upgrade";
+         }
+    
+         location ^~ /dbggw/debug {
+           proxy_pass http://debug_server/dbggw/debug;
+           proxy_set_header Host $host;
+           proxy_set_header X-Real-IP $remote_addr;
+           proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+           proxy_set_header X-Forwarded-Proto $scheme;
+           proxy_http_version 1.1;
+           proxy_set_header Upgrade $http_upgrade;
+           proxy_set_header Connection "upgrade";
+         }
+    
+         location ^~ /dbggw/init/requestDebug {
+           proxy_pass http://debug_server/dbggw/init/requestDebug;
+           proxy_set_header Host $host;
+           proxy_set_header Cookie $http_cookie;
+           proxy_set_header X-Real-IP $remote_addr;
+           proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+           proxy_http_version 1.1;
+           proxy_cookie_path /debug/ /;
+         }
+    
+         location ^~ /analyze {
+           proxy_pass http://analyze_server/analyze;
+           proxy_set_header Host $host;
+           proxy_set_header Cookie $http_cookie;
+           proxy_set_header X-Real-IP $remote_addr;
+           proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+           proxy_cookie_path ~/analyze/? /;
+           proxy_http_version 1.1;
+           proxy_set_header Connection "";
+         }
+    
+    
+         location / {
+           root /usr/share/nginx/html;
+           index index.html;
+           try_files $uri $uri/ /index.html;
+         }
+         location ~ .*\.html$ {
+           root /usr/share/nginx/html;
+           expires 30s;
+         }
+         error_page 500 502 503 504 /50x.html;
+         location = /50x.html {
+           root html;
+         }
+       }
+    
+       upstream gateway_server{
+         server cloudquery-gateway:8888;
+         keepalive 128;
+       }
+       server {
+           listen 9999;
+           server_name localhost
+           client_max_body_size 120M;
+           charset utf-8; #编码格式
+           location ^~ /gateway/v2 {
+             proxy_pass http://gateway_server/gateway/v2;
+             proxy_set_header Host $host;
+             proxy_set_header Cookie $http_cookie;
+             proxy_set_header X-Real-IP $remote_addr;
+             proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+             proxy_cookie_path ~/gateway/v2/? /;
+             proxy_http_version 1.1;
+             proxy_set_header Connection "";
+           }
+    
+           location / {
+             root /usr/share/nginx/html;
+             index index.html;
+             try_files $uri $uri/ /index.html;
+           }
+           location ~ .*\.html$ {
+             root /usr/share/nginx/html;
+             expires 30s;
+           }
+           error_page 500 502 503 504 /50x.html;
+           location = /50x.html {
+             root html;
+           }
+       }
+     }
 
-    events {
-      worker_connections 1024;
-    }
-
-
-    http {
-      include mime.types;
-      default_type application/octet-stream;
-      sendfile on;
-      keepalive_requests          1024;
-      keepalive_timeout           300s;
-      send_timeout                300s;
-      proxy_connect_timeout       300s;
-      proxy_send_timeout          300s;
-      proxy_read_timeout          300s;
-
-      gzip on;
-      gzip_min_length 1k;
-      gzip_comp_level 5;
-      gzip_types text/plain application/javascript application/x-javascript text/javascript text/xml text/css application/json;
-      gzip_disable "MSIE [1-6]\.";
-      gzip_vary on;
-
-      upstream user_server{
-        server cloudquery-user:8001;
-        keepalive 128;
-      }
-
-      upstream dms_server{
-        server cloudquery-dms:9001;
-        keepalive 128;
-      }
-
-      upstream export_server{
-        server cloudquery-export:8787;
-        keepalive 128;
-      }
-
-
-
-      upstream terminal_server{
-        server cloudquery-terminal:9950;
-      }
-
-      upstream flow_server{
-        server cloudquery-flow:9876;
-        keepalive 128;
-      }
-
-      upstream desens_server{
-        server cloudquery-desens:6202;
-      }
-
-      upstream lsp_server {
-        server cloudquery-dms:4389;
-      }
-
-      upstream data_dict_server {
-          server cloudquery-metadict:9192;
-      }
-
-      upstream debug_server{
-          server cloudquery-debug:8899;
-      }
-
-      upstream analyze_server{
-          server cloudquery-analyze:9007;
-          keepalive 128;
-      }
-
-      # upstream grafana_server{
-      #     server cloudquery-grafana:3000;
-      # }
-
-      server {
-        listen 9898;
-        server_name localhost 192.168.3.18 br.bintools.cn; #监听的域名
-        client_max_body_size 120M;
-        charset utf-8; #编码格式
-        location ^~ /user {
-          proxy_pass http://user_server/user;
-          proxy_set_header Host $host;
-          proxy_set_header Cookie $http_cookie;
-          proxy_set_header X-Real-IP $remote_addr;
-          proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-          proxy_cookie_path ~/user/? /;
-          proxy_http_version 1.1;
-          proxy_set_header Connection "";
-        }
-        location ^~ /gateway/cq {
-          proxy_pass http://gateway_server/gateway/cq;
-          proxy_set_header Host $host;
-          proxy_set_header Cookie $http_cookie;
-          proxy_set_header X-Real-IP $remote_addr;
-          proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-          proxy_cookie_path ~/gateway/cq/? /;
-          proxy_http_version 1.1;
-          proxy_set_header Connection "";
-        }
-        location ^~ /dms {
-          proxy_pass http://dms_server/dms;
-          proxy_set_header Host $host;
-          proxy_set_header Cookie $http_cookie;
-          proxy_set_header X-Real-IP $remote_addr;
-          proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-          proxy_cookie_path ~/dms/? /;
-          proxy_http_version 1.1;
-          proxy_set_header Connection "";
-        }
-        location ^~ /export {
-          proxy_pass http://export_server/export;
-          proxy_set_header Host $host;
-          proxy_set_header Cookie $http_cookie;
-          proxy_set_header X-Real-IP $remote_addr;
-          proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-          proxy_cookie_path ~/export/? /;
-          proxy_http_version 1.1;
-          proxy_set_header Connection "";
-        }
-
-
-        location ^~ /terminal {
-          proxy_pass http://terminal_server/terminal;
-          proxy_set_header Host $host;
-          proxy_set_header X-Real-IP $remote_addr;
-          proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-          proxy_set_header X-Forwarded-Proto $scheme;
-          proxy_http_version 1.1;
-          proxy_set_header Upgrade $http_upgrade;
-          proxy_set_header Connection "upgrade";
-        }
-        location ^~ /api/flow {
-          proxy_pass http://flow_server/flow;
-          proxy_set_header Host $host;
-          proxy_set_header X-Real-IP $remote_addr;
-          proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-          proxy_set_header X-Forwarded-Proto $scheme;
-          proxy_http_version 1.1;
-          proxy_set_header Connection "";
-        }
-
-        location ^~ /desens {
-          proxy_pass http://desens_server/desens;
-          proxy_set_header Host $host;
-          proxy_set_header X-Real-IP $remote_addr;
-          proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-          proxy_http_version 1.1;
-        }
-
-        location ^~ /lspserver {
-          proxy_pass http://lsp_server;
-          proxy_set_header Host $host;
-          proxy_set_header X-Real-IP $remote_addr;
-          proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-          proxy_set_header X-Forwarded-Proto $scheme;
-          proxy_http_version 1.1;
-          proxy_set_header Upgrade $http_upgrade;
-          proxy_set_header Connection "upgrade";
-        }
-
-        location ^~ /dbggw/debug {
-          proxy_pass http://debug_server/dbggw/debug;
-          proxy_set_header Host $host;
-          proxy_set_header X-Real-IP $remote_addr;
-          proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-          proxy_set_header X-Forwarded-Proto $scheme;
-          proxy_http_version 1.1;
-          proxy_set_header Upgrade $http_upgrade;
-          proxy_set_header Connection "upgrade";
-        }
-
-        location ^~ /dbggw/init/requestDebug {
-          proxy_pass http://debug_server/dbggw/init/requestDebug;
-          proxy_set_header Host $host;
-          proxy_set_header Cookie $http_cookie;
-          proxy_set_header X-Real-IP $remote_addr;
-          proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-          proxy_http_version 1.1;
-          proxy_cookie_path /debug/ /;
-        }
-
-        location ^~ /analyze {
-          proxy_pass http://analyze_server/analyze;
-          proxy_set_header Host $host;
-          proxy_set_header Cookie $http_cookie;
-          proxy_set_header X-Real-IP $remote_addr;
-          proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-          proxy_cookie_path ~/analyze/? /;
-          proxy_http_version 1.1;
-          proxy_set_header Connection "";
-        }
-
-        # location ^~ /d/ {
-        #   proxy_pass http://grafana_server/d/;
-        #   proxy_set_header Host $host;
-        #   proxy_set_header X-Real-IP $remote_addr;
-        #   proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        #   proxy_http_version 1.1;
-        # }
-
-        # location ^~ /public/ {
-        #   proxy_pass http://grafana_server/public/;
-        #   proxy_set_header Host $host;
-        #   proxy_set_header X-Real-IP $remote_addr;
-        #   proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        # }
-
-        # location ^~ /api/dashboards/ {
-        #   proxy_pass http://grafana_server/api/dashboards/;
-        #   proxy_set_header Host $host;
-        #   proxy_set_header X-Real-IP $remote_addr;
-        #   proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        #   proxy_http_version 1.1;
-        # }
-
-        # location ^~ /api/datasources/ {
-        #   proxy_pass http://grafana_server/api/datasources/;
-        #   proxy_set_header Host $host;
-        #   proxy_set_header X-Real-IP $remote_addr;
-        #   proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        #   proxy_http_version 1.1;
-        # }
-
-        # location ^~ /api/annotations {
-        #   proxy_pass http://grafana_server/api/annotations;
-        #   proxy_set_header Host $host;
-        #   proxy_set_header X-Real-IP $remote_addr;
-        #   proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        #   proxy_http_version 1.1;
-        # }
-
-        # location ^~ /api/search {
-        #   proxy_pass http://grafana_server/api/search;
-        #   proxy_set_header Host $host;
-        #   proxy_set_header X-Real-IP $remote_addr;
-        #   proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        #   proxy_http_version 1.1;
-        # }
-
-        # location ^~ /api/ds {
-        #   proxy_pass http://grafana_server/api/ds;
-        #   proxy_set_header Host $host;
-        #   proxy_set_header X-Real-IP $remote_addr;
-        #   proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        #   proxy_http_version 1.1;
-        #   proxy_set_header Upgrade $http_upgrade;
-        #   proxy_set_header Connection "upgrade";
-        # }
-        # location ^~ /api/frontend-metrics {
-        #   proxy_pass http://grafana_server/api/frontend-metrics;
-        #   proxy_set_header Host $host;
-        #   proxy_set_header X-Real-IP $remote_addr;
-        #   proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        #   proxy_http_version 1.1;
-        #   proxy_set_header Upgrade $http_upgrade;
-        #   proxy_set_header Connection "upgrade";
-        # }
-        # location ^~ /api/prometheus {
-        #   proxy_pass http://grafana_server/api/prometheus;
-        #   proxy_set_header Host $host;
-        #   proxy_set_header X-Real-IP $remote_addr;
-        #   proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        #   proxy_http_version 1.1;
-        #   proxy_set_header Upgrade $http_upgrade;
-        #   proxy_set_header Connection "upgrade";
-        # }
-
-
-        location / {
-          root /usr/share/nginx/html;
-          index index.html;
-          try_files $uri $uri/ /index.html;
-        }
-        location ~ .*\.html$ {
-          root /usr/share/nginx/html;
-          expires 30s;
-        }
-        error_page 500 502 503 504 /50x.html;
-        location = /50x.html {
-          root html;
-        }
-      }
-
-      upstream gateway_server{
-        server cloudquery-gateway:8888;
-        keepalive 128;
-      }
-      server {
-          listen 9999;
-          server_name localhost 192.168.3.18 br.bintools.cn; #监听的域名
-          client_max_body_size 120M;
-          charset utf-8; #编码格式
-          location ^~ /gateway/v2 {
-            proxy_pass http://gateway_server/gateway/v2;
-            proxy_set_header Host $host;
-            proxy_set_header Cookie $http_cookie;
-            proxy_set_header X-Real-IP $remote_addr;
-            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-            proxy_cookie_path ~/gateway/v2/? /;
-            proxy_http_version 1.1;
-            proxy_set_header Connection "";
-          }
-
-          location / {
-            root /usr/share/nginx/html;
-            index index.html;
-            try_files $uri $uri/ /index.html;
-          }
-          location ~ .*\.html$ {
-            root /usr/share/nginx/html;
-            expires 30s;
-          }
-          error_page 500 502 503 504 /50x.html;
-          location = /50x.html {
-            root html;
-          }
-      }
-    }

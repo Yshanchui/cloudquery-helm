@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cloudquery-user
+  labels:
+    app: cloudquery-user
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cloudquery-user
+  template:
+    metadata:
+      labels:
+        app: cloudquery-user
+    spec:
+      containers:
+        - name: user
+          image: yshanchui/cloudquery-user:cloudquery-club-{{ .Values.version }}
+          env:
+            - name: CLOUDQUERY_HOME
+              value: /opt/cloudquery/data
+            - name: _JAVA_OPTIONS
+              value: -Xmx800m -Xms800m
+            - name: TZ
+              value: Asia/Shanghai
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: cloudquery-user
+  name: cloudquery-user
+spec:
+  ports:
+    - name: "http"
+      port: 8001
+      targetPort: 8001
+  selector:
+    app: cloudquery-user

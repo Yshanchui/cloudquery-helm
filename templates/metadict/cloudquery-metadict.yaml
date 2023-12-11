@@ -19,19 +19,22 @@ spec:
           image: yshanchui/cloudquery-metadict:cloudquery-club-{{ .Values.version }}
           env:
             - name: _JAVA_OPTIONS
-              value: -Xmx1g -Xms1g
+              value: -Xmx800m -Xms800m
+            - name: TZ
+              value: Asia/Shanghai
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-          volumeMounts:
-            - name: config-volume
-              mountPath: /opt/cloudquery/config/application.yml
-              subPath: application.yml
-#            - name: lucene-indexes-volume
-#              mountPath: /opt/cloudquery/LuceneIndexes
-      volumes:
-        - name: config-volume
-          configMap:
-            name: cloudquery-metadict-configmap
-#        - name: lucene-indexes-volume
-#          persistentVolumeClaim:
-#            claimName: cloudquery-metadict-lucene-indexes
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: cloudquery-metadict
+  name: cloudquery-metadict
+spec:
+  ports:
+    - name: "http"
+      port: 9192
+      targetPort: 9192
+  selector:
+    app: cloudquery-metadict

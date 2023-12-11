@@ -15,10 +15,12 @@ spec:
     spec:
       containers:
         - name: cloudquery-clickhouse
-          image: clickhouse/clickhouse-server:23.8.4  # 使用适当的 ClickHouse 版本
+          image: clickhouse/clickhouse-server:23.3.2.37  # 使用适当的 ClickHouse 版本
           env:
             - name: ALLOW_EMPTY_PASSWORD
               value: "yes"
+            - name: TZ
+              value: Asia/Shanghai
           ports:
             - containerPort: 8123
             - containerPort: 9000
@@ -33,4 +35,4 @@ spec:
         storageClassName: {{ .Values.storageClassName }} # 选择适当的存储类
         resources:
           requests:
-            storage: 10Gi  # 根据需求调整存储大小
+            storage: 20Gi  # 根据需求调整存储大小

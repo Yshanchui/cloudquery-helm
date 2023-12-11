@@ -20,18 +20,21 @@ spec:
           env:
             - name: _JAVA_OPTIONS
               value: -Xmx800m -Xms800m
+            - name: TZ
+              value: Asia/Shanghai
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-          volumeMounts:
-#            - name: data-volume
-#              mountPath: /opt/cloudquery/DataChange
-            - name: config-volume
-              mountPath: /opt/cloudquery/config/application.yml
-              subPath: application.yml
-      volumes:
-#        - name: data-volume
-#          persistentVolumeClaim:
-#            claimName: cloudquery-flow-data-change
-        - name: config-volume
-          configMap:
-            name: cloudquery-flow-configmap
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: cloudquery-flow
+  name: cloudquery-flow
+spec:
+  ports:
+    - name: "http"
+      port: 9876
+      targetPort: 9876
+  selector:
+    app: cloudquery-flow

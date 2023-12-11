@@ -16,5 +16,7 @@ metadata:
   {{- end }}
 data:
   override.conf: |-
+    log_timezone=PRC
+    timezone=PRC
     {{- include "common.tplvalues.render" ( dict "value" .Values.primary.extendedConfiguration "context" $ ) | nindent 4 }}
 {{- end }}

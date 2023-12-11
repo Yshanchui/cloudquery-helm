@@ -1,12 +1,18 @@
 name: cloudquery
 
-version: V2.5.0
+version: V2.6.0
 
-storageClassName: ebs-gp3
+storageClassName: local-path
 
 resources:
   limits:
-    cpu: 1
-    memory: 3Gi
+    memory: 1Gi
   requests:
     memory: 512Mi
+
+dms:
+  resources:
+    limits:
+      memory: 2Gi
+    requests:
+      memory: 1Gi

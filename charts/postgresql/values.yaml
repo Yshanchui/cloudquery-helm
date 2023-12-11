@@ -186,7 +186,7 @@ containerPorts:
 ## @param audit.pgAuditLogCatalog Log catalog using pgAudit
 ## @param audit.clientMinMessages Message log level to share with the user
 ## @param audit.logLinePrefix Template for log line prefix (default if not set)
-## @param audit.logTimezone Timezone for the log timestamps
+## @param audit.Timezone for the log timestamps
 ##
 audit:
   logHostname: false
@@ -368,7 +368,9 @@ primary:
   ##   - name: FOO
   ##     value: "bar"
   ##
-  extraEnvVars: []
+  extraEnvVars:
+    - name: TZ
+      value: Asia/Shanghai
   ## @param primary.extraEnvVarsCM Name of existing ConfigMap containing extra env vars for PostgreSQL Primary nodes
   ##
   extraEnvVarsCM: ""
@@ -682,7 +684,7 @@ primary:
       - ReadWriteOnce
     ## @param primary.persistence.size PVC Storage Request for PostgreSQL volume
     ##
-    size: 8Gi
+    size: 20Gi
     ## @param primary.persistence.annotations Annotations for the PVC
     ##
     annotations: {}
@@ -731,7 +733,9 @@ readReplicas:
   ##   - name: FOO
   ##     value: "bar"
   ##
-  extraEnvVars: []
+  extraEnvVars:
+    - name: TZ
+      value: Asia/Shanghai
   ## @param readReplicas.extraEnvVarsCM Name of existing ConfigMap containing extra env vars for PostgreSQL read only nodes
   ##
   extraEnvVarsCM: ""
@@ -1419,7 +1423,9 @@ metrics:
   ##  - name: PG_EXPORTER_DISABLE_DEFAULT_METRICS
   ##    value: "true"
   ##
-  extraEnvVars: []
+  extraEnvVars:
+    - name: TZ
+      value: Asia/Shanghai
   ## PostgreSQL Prometheus exporter containers' Security Context
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container
   ## @param metrics.containerSecurityContext.enabled Enable PostgreSQL Prometheus exporter containers' Security Context

@@ -21,19 +21,25 @@ spec:
             - name: CLOUDQUERY_HOME
               value: /opt/cloudquery/data
             - name: _JAVA_OPTIONS
-              value: -Xmx1g -Xms1g
+              value: -Xmx800m -Xms800m
+            - name: TZ
+              value: Asia/Shanghai
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-          volumeMounts:
-#            - name: data-volume
-#              mountPath: /opt/cloudquery/data
-            - name: config-volume
-              mountPath: /opt/cloudquery/config/application.yml
-              subPath: application.yml
-      volumes:
-#        - name: data-volume
-#          persistentVolumeClaim:
-#            claimName: cloudquery-user-data
-        - name: config-volume
-          configMap:
-            name: cloudquery-export-configmap
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: cloudquery-export
+  name: cloudquery-export
+spec:
+  ports:
+    - name: "http"
+      port: 8787
+      targetPort: 8787
+    - name: "sokcet"
+      port: 9803
+      targetPort: 9803
+  selector:
+    app: cloudquery-export
