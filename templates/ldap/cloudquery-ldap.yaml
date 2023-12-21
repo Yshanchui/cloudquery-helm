@@ -1,0 +1,50 @@
+{{- if .Values.ldap.enable }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cloudquery-ldap
+  labels:
+    app: cloudquery-ldap
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cloudquery-ldap
+  template:
+    metadata:
+      labels:
+        app: cloudquery-ldap
+    spec:
+      containers:
+        - name: cloudquery-ldap
+          image: yshanchui/cloudquery-ldap:cloudquery-club-{{ .Values.version }}
+          env:
+            - name: TZ
+              value: Asia/Shanghai
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+            - name: config-volume
+              mountPath: /app/application.yml
+              subPath: application.yml
+      volumes:
+        - name: config-volume
+          configMap:
+            name: cloudquery-ldap-configmap
+{{- end }}
+---
+{{- if .Values.ldap.enable }}
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: cloudquery-ldap
+  name: cloudquery-ldap
+spec:
+  ports:
+    - name: "http"
+      port: 8080
+      targetPort: 8080
+  selector:
+    app: cloudquery-ldap
+  {{- end }}

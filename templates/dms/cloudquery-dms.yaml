@@ -23,7 +23,7 @@ spec:
             - name: LC_ALL
               value: C.UTF-8
             - name: _JAVA_OPTIONS
-              value: -Xmx1600m -Xms1600m
+              value: -Xmx3072m -Xms3072m
             - name: TZ
               value: Asia/Shanghai
           resources:

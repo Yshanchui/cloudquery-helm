@@ -1,0 +1,24 @@
+{{- if .Values.ldap.enable }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cloudquery-ldap-configmap
+data:
+  application.yml: |
+    spring:
+      datasource:
+        url: jdbc:postgresql://localhost:5432/postgres
+        username: postgres
+        password: WVCmFZs841@
+      ldap:
+        urls: {{ .Values.ldap.urls }}
+        username: {{ .Values.ldap.username }}
+        password: {{ .Values.ldap.password }}
+        base: {{ .Values.ldap.base }}
+    mybatis-plus:
+      configuration:
+        cache-enabled: true
+        use-generated-keys: true
+        default-executor-type: REUSE
+        use-actual-param-name: true
+{{- end }}

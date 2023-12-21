@@ -1,8 +1,8 @@
 name: cloudquery
 
-version: V2.6.0
+version: V2.7.0
 
-storageClassName: local-path
+storageClassName: ebs-gp3
 
 resources:
   limits:
@@ -13,6 +13,13 @@ resources:
 dms:
   resources:
     limits:
-      memory: 2Gi
+      memory: 4Gi
     requests:
-      memory: 1Gi
+      memory: 2Gi
+
+ldap:
+  enable: true
+  urls: ldap://ldap:389
+  username: cn=admin,dc=example,dc=org
+  password: admin
+  base: dc=example,dc=org
